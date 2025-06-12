@@ -1,103 +1,72 @@
-import Image from "next/image";
+'use client';
+
+import { useState } from 'react';
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [recentBlinkTime, setRecentBlinkTime] = useState(0); // 예시 값 (초)
+  const [blinkInterval, setBlinkInterval] = useState(5); // 기본값 5초
+  const [warningSoundEnabled, setWarningSoundEnabled] = useState(false);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+  return (
+    <div className="flex flex-col items-center justify-center min-h-screen p-8 bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+      <main className="flex flex-col gap-8 p-8 bg-white dark:bg-gray-800 rounded-lg shadow-md w-full max-w-md">
+        <h1 className="text-3xl font-bold text-center mb-4">Blink</h1>
+
+        {/* 최근 깜빡이는데 걸린 시간 */}
+        <section className="mb-6 text-center">
+          <h2 className="text-2xl font-semibold mb-2">최근 깜빡이는데 걸린 시간</h2>
+          <p className="text-5xl font-extrabold text-blue-600 dark:text-blue-400">
+            {recentBlinkTime}
+            <span className="text-xl">초</span>
+          </p>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
+            (이 값은 센서로부터 실시간으로 업데이트될 예정입니다)
+          </p>
+        </section>
+
+        {/* 설정 창 */}
+        <section className="border-t pt-6 border-gray-200 dark:border-gray-700">
+          <h2 className="text-2xl font-semibold mb-4 text-center">설정</h2>
+
+          {/* 깜빡임 주기 설정 */}
+          <div className="flex items-center justify-between mb-4">
+            <label htmlFor="blinkInterval" className="text-lg font-medium">
+              몇 초에 한 번 깜빡일까요?
+            </label>
+            <input
+              type="number"
+              id="blinkInterval"
+              value={blinkInterval}
+              onChange={(e) => setBlinkInterval(Number(e.target.value))}
+              min="1"
+              className="w-20 p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-right"
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
+          </div>
+
+          {/* 경고음 설정 */}
+          <div className="flex items-center justify-between">
+            <span className="text-lg font-medium">
+              설정치보다 늦게 깜빡이면 경고음을 받을까요?
+            </span>
+            <label htmlFor="warningSoundToggle" className="relative flex items-center cursor-pointer">
+              <input
+                type="checkbox"
+                id="warningSoundToggle"
+                checked={warningSoundEnabled}
+                onChange={(e) => setWarningSoundEnabled(e.target.checked)}
+                className="sr-only peer"
+              />
+              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 
+              peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 
+              peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] 
+              after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border 
+              after:border-gray-300 after:rounded-full after:h-5 after:w-5 after:transition-all 
+              dark:border-gray-600 peer-checked:bg-blue-600">
+              </div>
+            </label>
+          </div>
+        </section>
       </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
     </div>
   );
 }
