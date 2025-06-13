@@ -21,9 +21,10 @@ export default function BlinkDetector({ onBlink }: BlinkDetectorProps) {
     async function setup() {
       await tf.setBackend('webgl');
       await tf.ready();
-      detectorRef.current = await faceLandmarksDetection.load(
-        faceLandmarksDetection.SupportedPackages.mediapipeFacemesh
-      );
+      const model = faceLandmarksDetection.SupportedModels.MediaPipeFaceMesh;
+      detectorRef.current = await faceLandmarksDetection.createDetector(model, {
+        runtime: 'tfjs',
+      });
 
       if (!isMounted) return;
       const video = videoRef.current;
