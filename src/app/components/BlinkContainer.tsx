@@ -3,6 +3,7 @@
 import { useState, useCallback } from 'react';
 import BlinkTimer from './BlinkTimer';
 import Settings from './Settings';
+import BlinkDetector from './BlinkDetector';
 
 export default function BlinkContainer() {
   const [recentBlinkTime, setRecentBlinkTime] = useState(0);
@@ -19,6 +20,7 @@ export default function BlinkContainer() {
 
   return (
     <>
+      <BlinkDetector onBlink={setRecentBlinkTime} />
       <BlinkTimer recentBlinkTime={recentBlinkTime} />
       <Settings
         blinkInterval={blinkInterval}
@@ -28,4 +30,4 @@ export default function BlinkContainer() {
       />
     </>
   );
-} 
+}
