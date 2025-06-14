@@ -24,7 +24,7 @@ export default function BlinkContainer() {
   }, []);
 
   useEffect(() => {
-    const { hasGetUserMedia, enableCam } = FaceMarkViewModel();
+    const { hasGetUserMedia, enableCam } = FaceMarkViewModel(setRecentBlinkTime);
 
     if (videoRef.current && canvasRef.current && webcamButtonRef.current && blendShapesRef.current) {
       if (hasGetUserMedia()) {
@@ -38,6 +38,8 @@ export default function BlinkContainer() {
       }
     }
   }, []);
+
+  const { videoWidth } = FaceMarkViewModel();
 
   return (
     <>
@@ -58,9 +60,9 @@ export default function BlinkContainer() {
           <span className="mdc-button__ripple"></span>
           <span className="mdc-button__label">웹캠 활성화</span>
         </button>
-        <div style={{ position: 'relative' }}>
-          <video id="webcam" ref={videoRef} style={{ position: 'absolute' }} autoPlay playsInline></video>
-          <canvas className="output_canvas" id="output_canvas" ref={canvasRef} style={{ position: 'absolute', left: '0px', top: '0px' }}></canvas>
+        <div style={{ position: 'relative', width: `${videoWidth}px`, minHeight: `${videoWidth * (3/4)}px` }}>
+          <video id="webcam" ref={videoRef} style={{ position: 'absolute', width: '100%', height: '100%' }} autoPlay playsInline></video>
+          <canvas className="output_canvas" id="output_canvas" ref={canvasRef} style={{ position: 'absolute', left: '0px', top: '0px', width: '100%', height: '100%' }}></canvas>
         </div>
       </div>
       <div className="blend-shapes">
