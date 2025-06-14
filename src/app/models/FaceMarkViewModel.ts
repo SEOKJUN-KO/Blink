@@ -3,7 +3,7 @@ import { FaceLandmarker, FilesetResolver, DrawingUtils } from "@mediapipe/tasks-
 /**
  * 웹캠 기반 얼굴 랜드마크 감지 및 블렌드셰이프 표시를 관리하는 ViewModel.
  */
-export default function FaceMarkViewModel(onBlinkDetect?: (blinkValue: number) => void) {
+export default function FaceMarkViewModel(onBlinkDetect?: (blinkValue: number, blinkTimestamp: number) => void) {
     console.log("FaceMarkViewModel이 초기화되었습니다."); // 초기화 로그 복구
     // 얼굴 랜드마커 모델 인스턴스
     let faceLandmarker: FaceLandmarker | undefined;
@@ -17,7 +17,7 @@ export default function FaceMarkViewModel(onBlinkDetect?: (blinkValue: number) =
     // 깜빡임 감지를 위한 상태 변수
     let isEyeClosed = false; // 현재 눈이 감겨있는지 여부
     let lastBlinkDetectedTime: number | null = null; // 마지막으로 깜빡임이 감지된 시간 (밀리초)
-    const BLINK_THRESHOLD = 0.5; // 눈이 감겼다고 판단하는 임계값 (조정 가능) - 복구
+    const BLINK_THRESHOLD = 0.3; // 눈이 감겼다고 판단하는 임계값 (조정 가능) - 복구
 
     // FaceLandmarker 클래스를 사용하기 전에 로딩이 완료될 때까지 기다려야 합니다.
     // 머신러닝 모델은 크기가 커서 로드하는 데 시간이 걸릴 수 있습니다.
@@ -145,7 +145,7 @@ export default function FaceMarkViewModel(onBlinkDetect?: (blinkValue: number) =
      * @param blendShapesElement 블렌드셰이프 결과를 표시할 HTML 요소
      * @param onBlinkDetectCallback 깜빡임 감지 시 호출될 콜백 함수
      */
-    function handleDetectionResults(results: any, canvasCtx: CanvasRenderingContext2D, drawingUtils: DrawingUtils, blendShapesElement: HTMLElement, onBlinkDetectCallback?: (blinkValue: number) => void) {
+    function handleDetectionResults(results: any, canvasCtx: CanvasRenderingContext2D, drawingUtils: DrawingUtils, blendShapesElement: HTMLElement, onBlinkDetectCallback?: (blinkValue: number, blinkTimestamp: number) => void) {
       // 얼굴 특징 그리기 (랜드마크, 눈, 얼굴 윤곽 등)
       if (results.faceLandmarks) {
         drawFaceLandmarks(drawingUtils, results.faceLandmarks);
@@ -197,7 +197,7 @@ export default function FaceMarkViewModel(onBlinkDetect?: (blinkValue: number) =
      * @param blendShapes 블렌드셰이프 데이터 배열
      * @param onBlinkDetectCallback 깜빡임 감지 시 호출될 콜백 함수
      */
-    function handleBlendShapes(el: HTMLElement, blendShapes: any[], onBlinkDetectCallback?: (blinkValue: number) => void) {
+    function handleBlendShapes(el: HTMLElement, blendShapes: any[], onBlinkDetectCallback?: (blinkValue: number, blinkTimestamp: number) => void) {
       // 블렌드셰이프 데이터가 없으면 함수를 종료합니다.
       if (!blendShapes.length) {
         return;
@@ -238,7 +238,7 @@ export default function FaceMarkViewModel(onBlinkDetect?: (blinkValue: number) =
      * @param eyeBlinkRightScore 오른쪽 눈 깜빡임 점수
      * @param onBlinkDetectCallback 깜빡임 감지 시 호출될 콜백 함수
      */
-    function processBlinkDetection(eyeBlinkLeftScore: number, eyeBlinkRightScore: number, onBlinkDetectCallback?: (blinkValue: number) => void) {
+    function processBlinkDetection(eyeBlinkLeftScore: number, eyeBlinkRightScore: number, onBlinkDetectCallback?: (blinkValue: number, blinkTimestamp: number) => void) {
       // 두 눈 깜빡임 점수 중 최대값을 사용하여 현재 눈 깜빡임 점수를 계산합니다.
       const currentBlinkScore = Math.max(eyeBlinkLeftScore, eyeBlinkRightScore);
 
@@ -252,7 +252,7 @@ export default function FaceMarkViewModel(onBlinkDetect?: (blinkValue: number) =
           const currentTime = performance.now();
           if (lastBlinkDetectedTime !== null && onBlinkDetectCallback) {
             const blinkIntervalSeconds = (currentTime - lastBlinkDetectedTime) / 1000;
-            onBlinkDetectCallback(parseFloat(blinkIntervalSeconds.toFixed(2)));
+            onBlinkDetectCallback(parseFloat(blinkIntervalSeconds.toFixed(2)), currentTime);
           }
           lastBlinkDetectedTime = currentTime; // 마지막 깜빡임 시간 업데이트
           isEyeClosed = false; // 눈 열림 상태로 전환

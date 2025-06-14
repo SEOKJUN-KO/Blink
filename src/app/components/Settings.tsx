@@ -5,6 +5,8 @@ interface SettingsProps {
   warningSoundEnabled: boolean;
   onBlinkIntervalChange: (value: number) => void;
   onWarningSoundChange: (value: boolean) => void;
+  warningVolume: number;
+  onWarningVolumeChange: (value: number) => void;
 }
 
 export default function Settings({
@@ -12,6 +14,8 @@ export default function Settings({
   warningSoundEnabled,
   onBlinkIntervalChange,
   onWarningSoundChange,
+  warningVolume,
+  onWarningVolumeChange,
 }: SettingsProps) {
   return (
     <section className="border-t pt-6 border-gray-200 dark:border-gray-700">
@@ -33,7 +37,7 @@ export default function Settings({
       </div>
 
       {/* 경고음 설정 */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between mb-4">
         <span className="text-lg font-medium">
           설정치보다 늦게 깜빡이면 경고음을 받을까요?
         </span>
@@ -54,6 +58,24 @@ export default function Settings({
           </div>
         </label>
       </div>
+
+      {/* 경고음 볼륨 설정 */}
+      <div className="flex items-center justify-between mb-4">
+        <label htmlFor="warningVolume" className="text-lg font-medium">
+          경고음 볼륨 (0 - 100)
+        </label>
+        <input
+          type="range"
+          id="warningVolume"
+          min="0"
+          max="1"
+          step="0.01"
+          value={warningVolume}
+          onChange={(e) => onWarningVolumeChange(Number(e.target.value))}
+          className="w-20 p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-right"
+        />
+      </div>
+
     </section>
   );
 } 
