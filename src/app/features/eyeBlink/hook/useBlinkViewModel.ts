@@ -1,31 +1,28 @@
 import { IMonitor } from "../interface/IMonitor";
 import { BlinkMonitor } from "../domain/BlinkMonitor";
 import { BlinkSensor } from "../domain/BlinkSensor";
-import { useEffect, useState } from "react";
+import { useRef, useState } from "react";
 
-export default function useBlinkViewModel(videoElement: HTMLVideoElement | null, canvasElement: HTMLCanvasElement | null) {
+export default function useBlinkViewModel() {
 
     const [isRunning, setIsRunning] = useState(false);
-    const [monitor, setMonitor] = useState<IMonitor | null>(null);
+    const monitor = useRef<IMonitor | null>(null);
 
-    useEffect(() => {
-        if (videoElement && canvasElement) {
-            setMonitor(new BlinkMonitor(new BlinkSensor(videoElement, canvasElement)));
+    function start(videoElement: HTMLVideoElement, canvasElement: HTMLCanvasElement) {
+        if (monitor.current === null) {
+            monitor.current = new BlinkMonitor(new BlinkSensor(videoElement, canvasElement));
         }
-    }, [videoElement, canvasElement]);
 
-    function start() {
-        console.log("start");
-        if (monitor) {
+        if (monitor.current) {
             setIsRunning(true);
-            monitor.startMonitoring();
+            monitor.current.startMonitoring();
         }
     }
 
     function stop() {
-        if (monitor) {
+        if (monitor.current) {
             setIsRunning(false);
-            monitor.stopMonitoring();
+            monitor.current.stopMonitoring();
         }
     }
     

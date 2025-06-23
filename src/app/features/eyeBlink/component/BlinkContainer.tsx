@@ -16,7 +16,7 @@ export default function BlinkContainer() {
       <video ref={videoRef} className='border-2 border-gray-300 rounded-md'/>
       <canvas ref={canvasRef} className='border-2 border-gray-300 rounded-md'/>
       <button ref={webcamButtonRef} className='bg-blue-500 text-white p-2 rounded-md' 
-        onClick={start}
+        onClick={isRunning ? stop : start}
       >
         {isRunning ? "Stop" : "Start"}
       </button>
