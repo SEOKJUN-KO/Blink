@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 import Layout from './components/Layout';
-import BlinkContainer from './components/BlinkContainer';
-import StaticContent from './components/StaticContent';
+import BlinkContainer from './features/eyeBlink/component/BlinkContainer';
+import StaticContent from './features/eyeBlink/component/StaticContent';
 
 export const metadata: Metadata = {
   title: 'Blink - 눈 건강 지킴이',
