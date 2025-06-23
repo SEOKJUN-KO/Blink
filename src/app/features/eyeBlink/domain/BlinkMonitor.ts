@@ -1,4 +1,3 @@
-import { JSX } from 'react';
 import { IMonitor } from '../interface/IMonitor';
 import { ISensor } from '../interface/ISensor';
 
