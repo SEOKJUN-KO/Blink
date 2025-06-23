@@ -8,9 +8,9 @@ export default function useBlinkViewModel() {
     const [isRunning, setIsRunning] = useState(false);
     const monitor = useRef<IMonitor | null>(null);
 
-    function start(videoElement: HTMLVideoElement, canvasElement: HTMLCanvasElement) {
+    function start(videoElement: HTMLVideoElement, canvasElement: HTMLCanvasElement, blendShapesElement: HTMLUListElement) {
         if (monitor.current === null) {
-            monitor.current = new BlinkMonitor(new BlinkSensor(videoElement, canvasElement));
+            monitor.current = new BlinkMonitor(new BlinkSensor(videoElement, canvasElement, blendShapesElement));
         }
 
         if (monitor.current) {
