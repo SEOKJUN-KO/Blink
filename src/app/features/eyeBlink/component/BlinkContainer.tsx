@@ -7,7 +7,6 @@ export default function BlinkContainer() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const webcamButtonRef = useRef<HTMLButtonElement>(null);
-  const blendRef = useRef<HTMLUListElement>(null);
 
   const { start, stop, isRunning } = useBlinkViewModel();
 
@@ -21,8 +20,8 @@ export default function BlinkContainer() {
           if (isRunning) {
             stop();
           } else {
-            if (videoRef.current && canvasRef.current && blendRef.current) {
-              start(videoRef.current, canvasRef.current, blendRef.current);
+            if (videoRef.current && canvasRef.current) {
+              start(videoRef.current, canvasRef.current);
             } else {
               console.error("필요한 DOM 요소들이 준비되지 않았습니다.");
             }
@@ -31,7 +30,6 @@ export default function BlinkContainer() {
       >
         {isRunning ? "Stop" : "Start"}
       </button>
-      <ul ref={blendRef} className='border-2 border-gray-300 rounded-md'></ul>
     </div>
   );
 } 
