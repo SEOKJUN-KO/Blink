@@ -56,6 +56,7 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 *   `feat`: 새로운 기능 추가 (A new feature)
 *   `fix`: 버그 수정 (A bug fix)
 *   `docs`: 문서 변경 (Documentation only changes)
+*   `del`: 코드, 기능 삭제
 *   `style`: 코드 스타일 변경 (세미콜론, 공백, 포맷팅 등; 기능에 영향 없음) (Changes that do not affect the meaning of the code (white-space, formatting, missing semi-colons, etc))
 *   `refactor`: 코드 리팩토링 (기능 변경 없음, 버그 수정 없음) (A code change that neither fixes a bug nor adds a feature)
 *   `perf`: 성능 개선 (A code change that improves performance)
