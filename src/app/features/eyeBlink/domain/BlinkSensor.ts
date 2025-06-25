@@ -46,7 +46,6 @@ export class BlinkSensor implements ISensor {
       this.lastVideoTime = this.videoElement.currentTime;
       if (this.faceLandmarker) {
         this.results = this.faceLandmarker.detectForVideo(this.videoElement, startTimeMs);
-        console.log("Detection results:", this.results); // 전체 결과 로깅
       } else {
         console.warn("FaceLandmarker가 초기화되지 않았습니다.");
       }
@@ -65,6 +64,13 @@ export class BlinkSensor implements ISensor {
     
     if (results.faceBlendshapes && blendShapesElement) {
       this.handleBlendShapes(blendShapesElement, results.faceBlendshapes);
+    }
+  
+    if (results.faceBlendshapes && results.faceBlendshapes.length > 0) {
+      const categories = results.faceBlendshapes[0].categories;
+      if (this.checkBlink(categories)) {
+        alert("Blink detected");
+      }
     }
   }
 
@@ -147,9 +153,43 @@ export class BlinkSensor implements ISensor {
     // 생성된 HTML을 요소에 삽입하여 표시합니다.
     el.innerHTML = htmlMaker;
   }
+  private eyeStatus: "open" | "close" = "open";
+  private blinkLimitScore = 0.4;
+  private lastBlinkTime = 0;
+  private checkBlink(eyeBlinkShapes: any[]): boolean {
+    // eyeBlinkShapes는 blendShapes[0].categories 형태로 전달됨
+    const eyeBlinkLeftShape = eyeBlinkShapes.find((shape: any) => shape.categoryName === "eyeBlinkLeft");
+    const eyeBlinkRightShape = eyeBlinkShapes.find((shape: any) => shape.categoryName === "eyeBlinkRight");
+
+    if (!eyeBlinkLeftShape || !eyeBlinkRightShape) {
+      console.warn("눈 깜빡임 데이터를 찾을 수 없습니다:", eyeBlinkShapes);
+      return false;
+    }
+
+    const eyeBlinkLeftScore = eyeBlinkLeftShape.score;
+    const eyeBlinkRightScore = eyeBlinkRightShape.score;
+
+    const nowBlinkScore = (eyeBlinkLeftScore + eyeBlinkRightScore) / 2;
+    const nowEyeStatus: "open" | "close" = nowBlinkScore > this.blinkLimitScore ? "close" : "open";
+
+    if (this.eyeStatus === "open" && nowEyeStatus === "close") {
+      this.eyeStatus = "close";
+    } 
+    else if (this.eyeStatus === "close" && nowEyeStatus === "open") {
+      this.eyeStatus = "open";
+      this.lastBlinkTime = performance.now(); // 깜빡임이 완료될 때 시간 업데이트
+      return true; // 감았다 뜬 것
+    }
+    return false;
+  }
 
   getCurrentValue(): number {
-    throw new Error('Method not implemented.');
+    if (this.lastBlinkTime === 0) {
+      return 0; // 아직 깜빡임이 감지되지 않았으면 0 반환
+    }
+    const currentTime = performance.now();
+    const elapsedSeconds = (currentTime - this.lastBlinkTime) / 1000;
+    return elapsedSeconds;
   }
 
   public async listen(event: string, listener: (value: number) => void): Promise<void> {
