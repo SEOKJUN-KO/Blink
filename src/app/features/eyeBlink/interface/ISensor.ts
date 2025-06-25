@@ -1,5 +1,5 @@
 export interface ISensor {
   getCurrentValue(): number;
-  listen(event: string, listener: (value: number) => void): void;
-  off(event: string, listener: (value: number) => void): void;
+  listen(event: string, listener: (value: any) => void): void;
+  off(event: string): void;
 } 
