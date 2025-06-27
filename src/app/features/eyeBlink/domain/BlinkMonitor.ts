@@ -15,7 +15,6 @@ export class BlinkMonitor implements IMonitor, IWarningConfigurable {
   constructor(
     private sensor: ISensor,
     private warning: IWarning,
-    // private userSettings: IUserSettings
   ) {}
 
   on(eventName: string, callback: (data: any) => void): void {
