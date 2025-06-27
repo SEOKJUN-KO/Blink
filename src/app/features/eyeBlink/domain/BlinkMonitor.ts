@@ -1,7 +1,7 @@
-import { IMonitor } from '../interface/IMonitor';
-import { IWarningConfigurable } from '../interface/IWarningConfigurable';
-import { ISensor } from '../interface/ISensor';
-import { IWarning } from '../interface/IWarning';
+import { IMonitor } from '../../../interface/IMonitor';
+import { IWarningConfigurable } from '../../../interface/IWarningConfigurable';
+import { ISensor } from '../../../interface/ISensor';
+import { IWarning } from '../../../interface/IWarning';
 
 export class BlinkMonitor implements IMonitor, IWarningConfigurable {
   private isMonitoring: boolean = false;

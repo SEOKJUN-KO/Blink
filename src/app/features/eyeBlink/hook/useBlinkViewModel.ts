@@ -1,5 +1,5 @@
-import { IMonitor } from "../interface/IMonitor";
-import { IWarningConfigurable } from "../interface/IWarningConfigurable";
+import { IMonitor } from "../../../interface/IMonitor";
+import { IWarningConfigurable } from "../../../interface/IWarningConfigurable";
 import { BlinkMonitor } from "../domain/BlinkMonitor";
 import { BlinkSensor } from "../domain/BlinkSensor";
 import { BlinkWarning } from "../domain/BlinkWarning";

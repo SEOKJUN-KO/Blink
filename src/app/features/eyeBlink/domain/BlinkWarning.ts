@@ -1,4 +1,4 @@
-import { IWarning } from '../interface/IWarning';
+import { IWarning } from '../../../interface/IWarning';
 
 export class BlinkWarning implements IWarning {
     private audioContext: AudioContext | null = null;

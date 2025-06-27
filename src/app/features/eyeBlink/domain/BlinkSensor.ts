@@ -1,4 +1,4 @@
-import { ISensor } from '../interface/ISensor';
+import { ISensor } from '../../../interface/ISensor';
 import { FaceLandmarker, FilesetResolver } from "@mediapipe/tasks-vision";
 
 export class BlinkSensor implements ISensor {
