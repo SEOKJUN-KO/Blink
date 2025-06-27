@@ -7,7 +7,16 @@ export default function BlinkContainer() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const webcamButtonRef = useRef<HTMLButtonElement>(null);
 
-  const { start, stop, isRunning, lastBlinkInterval } = useBlinkViewModel();
+  const { 
+    start, 
+    stop, 
+    isRunning, 
+    lastBlinkInterval, 
+    isWarningEnabled, 
+    warningThreshold,
+    toggleWarning,
+    updateWarningThreshold 
+  } = useBlinkViewModel();
 
   return (
     <div className="w-full max-w-md bg-white rounded-3xl shadow-2xl overflow-hidden">
@@ -40,10 +49,50 @@ export default function BlinkContainer() {
             <div>
               <p className="text-xs text-green-600 font-medium">마지막 깜빡임 간격</p>
               <p className="text-xl font-bold text-green-700">
-                {lastBlinkInterval ? `${lastBlinkInterval}초` : '--'}
+                {lastBlinkInterval ? `${lastBlinkInterval.toFixed(1)}초` : '--'}
               </p>
             </div>
-            <div className="text-2xl"></div>
+          </div>
+        </div>
+
+        {/* 경고 설정 */}
+        <div className="bg-gradient-to-r from-orange-50 to-amber-50 rounded-2xl p-3 border border-orange-100">
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="text-xs text-orange-600 font-medium">소리 경고</span>
+              <button
+                onClick={toggleWarning}
+                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                  isWarningEnabled ? 'bg-orange-500' : 'bg-gray-300'
+                }`}
+              >
+                <span
+                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                    isWarningEnabled ? 'translate-x-6' : 'translate-x-1'
+                  }`}
+                />
+              </button>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-xs text-orange-600 font-medium">경고 임계값</span>
+              <div className="flex items-center space-x-2">
+                <button
+                  onClick={() => updateWarningThreshold(Math.max(1, warningThreshold - 1))}
+                  className="w-6 h-6 rounded-full bg-orange-200 text-orange-600 text-xs font-bold hover:bg-orange-300"
+                >
+                  -
+                </button>
+                <span className="text-xs font-medium text-orange-700 min-w-[2rem] text-center">
+                  {warningThreshold}초
+                </span>
+                <button
+                  onClick={() => updateWarningThreshold(warningThreshold + 1)}
+                  className="w-6 h-6 rounded-full bg-orange-200 text-orange-600 text-xs font-bold hover:bg-orange-300"
+                >
+                  +
+                </button>
+              </div>
+            </div>
           </div>
         </div>
 

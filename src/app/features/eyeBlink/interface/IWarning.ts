@@ -1,4 +1,3 @@
 export interface IWarning {
-  triggerWarning(message: string): void;
-  clearWarning(): void;
+  makeWarning(message: string): void;
 } 
