@@ -91,7 +91,7 @@ export class BlinkSensor implements ISensor {
   private handleWorkerMessage(event: MessageEvent): void {
     const { type, data } = event.data;
     switch (type) {
-      case 'videoFrame':
+      case 'requestVideoFrame':
         this.sendingVideoFrame();
         break;
       case 'eyeStatus':

@@ -119,7 +119,7 @@ onmessage = async (e) => {
         }
         await videoProcessor.makeDectector();
         intervalId = setInterval(() => {
-          postMessage({type: 'videoFrame'});
+          postMessage({type: 'requestVideoFrame'});
         }, 33);
         break;
       
