@@ -1,49 +1,53 @@
 import { ISensor } from '../../../interface/ISensor';
-import { FaceLandmarker, FilesetResolver } from "@mediapipe/tasks-vision";
 
 export class BlinkSensor implements ISensor {
-  private faceLandmarker: FaceLandmarker | undefined;
   private animationFrameId: number | null = null;
   private listeners: Map<string, (value: number) => void> = new Map();
-  private webcamRunning: boolean = false;
+  private worker: Worker | null = null;
+  private isWorkerMode: boolean = false;
+  private canvas: HTMLCanvasElement | null = null;
+  private ctx: CanvasRenderingContext2D | null = null;
+  
   constructor(
     private videoElement: HTMLVideoElement
   ) {}
 
-  destructor() {
-    if (this.animationFrameId !== null) {
-      window.cancelAnimationFrame(this.animationFrameId);
-      this.animationFrameId = null;
-    }
-    
-    if (this.videoElement) {
-      this.videoElement.pause();
-      this.videoElement.srcObject = null;
-    }
-
-    if (this.faceLandmarker) {
-      this.faceLandmarker.close();
-      this.faceLandmarker = undefined;
-    }
-    this.webcamRunning = false;
-    this.results = undefined;
-    this.lastVideoTime = 0;
+  public getCurrentValue(): number {
+    // 워커에서 처리하므로 0 반환 (필요시 워커에서 요청)
+    return 0;
   }
 
-  private async makeDectector(): Promise<void> {
-    const filesetResolver = await FilesetResolver.forVisionTasks(
-      "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3/wasm"
-    );
-    // FaceLandmarker 모델을 옵션과 함께 생성합니다.
-    this.faceLandmarker = await FaceLandmarker.createFromOptions(filesetResolver, {
-      baseOptions: {
-        modelAssetPath: `/face_landmarker.task`, // 모델 파일 경로
-        delegate: "GPU" // GPU 위임 사용 (성능 향상)
-      },
-      outputFaceBlendshapes: true, // 얼굴 블렌드셰이프 출력 활성화
-      runningMode: "VIDEO",
-      numFaces: 1 // 감지할 최대 얼굴 수
-    });
+  public async listen(event: string, listener: (value: number) => void): Promise<void> {
+    this.listeners.set(event, listener);
+    
+    if (!this.isWorkerMode) {
+      await this.startWorkerMode();
+    }
+  }
+
+  public async off(event: string): Promise<void> {
+    this.listeners.delete(event);
+    
+    if (this.listeners.size === 0) {
+      this.destructor();
+    }
+  }
+
+  private async startWorkerMode(): Promise<void> {
+    if (this.isWorkerMode) {
+      console.warn('워커 모드가 이미 활성화되어 있습니다.');
+      return;
+    }
+    try {
+      this.startVideoStream();
+
+      this.worker = await this.createWorker();
+      this.isWorkerMode = true;
+    } catch (error) {
+      console.error('워커 모드 시작 실패:', error);
+      this.destructor();
+      throw error;
+    }
   }
 
   private startVideoStream(): void {
@@ -51,61 +55,98 @@ export class BlinkSensor implements ISensor {
     navigator.mediaDevices.getUserMedia(constraints).then((stream) => {
       this.videoElement.srcObject = stream;
       this.videoElement.play().then(() => {
-        this.predictWebcam();
       }).catch((e) => {
         console.warn("비디오 재생 실패:", e);
       });
     });
   }
 
-  private lastVideoTime = 0;
-  private results: any = undefined;
-
-  private async predictWebcam() {
-
-    let startTimeMs = performance.now();
-    if (this.lastVideoTime !== this.videoElement.currentTime) {
-      this.lastVideoTime = this.videoElement.currentTime;
-      if (this.faceLandmarker) {
-        this.results = this.faceLandmarker.detectForVideo(this.videoElement, startTimeMs);
-      } else {
-        console.warn("FaceLandmarker가 초기화되지 않았습니다.");
-      }
-    }
-    if(this.results) {
-      this.handleDetectionResults(this.results);
-    }
-    if (this.webcamRunning === true) {
-      this.animationFrameId = window.requestAnimationFrame(() => this.predictWebcam());
+  private async createWorker(): Promise<Worker> {
+    try {
+      const worker = new Worker(
+        new URL('../worker/blinkDetectWorker.ts', import.meta.url),
+        { type: 'module' }
+      );
+      
+      worker.onmessage = (event) => this.handleWorkerMessage(event);
+      
+      worker.onerror = (error) => {
+        console.error('워커 에러:', error);
+      };
+      
+      worker.postMessage({ 
+        type: 'initialize',
+        data: {
+          modelPath: '/face_landmarker.task'
+        }
+      });
+      
+      return worker;
+    } catch (error) {
+      console.error('워커 생성 실패:', error);
+      throw error;
     }
   }
 
-  private handleDetectionResults(results: any) {
-    if (results.faceBlendshapes && results.faceBlendshapes.length > 0) {
-      const categories = results.faceBlendshapes[0].categories;
-      if (this.isBlink(categories)) {
-        this.notifyListeners('blinkDetected', this.lastBlinkTime);
-      }
+  private handleWorkerMessage(event: MessageEvent): void {
+    const { type, data } = event.data;
+    switch (type) {
+      case 'videoFrame':
+        this.sendingVideoFrame();
+        break;
+      case 'eyeStatus':
+        if(this.isBlink(data.status)) {
+          this.notifyListeners('blinkDetected', this.lastBlinkTime);
+        }
+        break;
+      case 'error':
+        console.error('워커 오류:', data.message);
+        break;
+    }
+  }
+
+  private sendingVideoFrame(): void {
+    if (!this.worker) return;
+    
+    if (!this.canvas) {
+      this.initCanvas();
+    }
+    this.updateCanvasSize();
+    
+    if (this.canvas && this.ctx) {
+      this.ctx.drawImage(this.videoElement, 0, 0);
+      const imageData = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
+      
+      // 워커에 ImageData와 timestamp 전달
+      this.worker.postMessage({
+        type: 'getEyeStatus',
+        data: {
+          videoData: imageData,
+          timestamp: performance.now()
+        }
+      });
+    }
+  }
+
+  private initCanvas(): void {
+    this.canvas = document.createElement('canvas');
+    this.ctx = this.canvas.getContext('2d');
+  }
+
+  // Canvas 크기 업데이트
+  private updateCanvasSize(): void {
+    if (this.canvas && this.videoElement.videoWidth > 0) {
+      this.canvas.width = this.videoElement.videoWidth;
+      this.canvas.height = this.videoElement.videoHeight;
     }
   }
 
   private eyeStatus: "open" | "close" = "open";
   private blinkLimitScore = 0.4;
   private lastBlinkTime = 0;
-  private isBlink(eyeBlinkShapes: any[]): boolean {
-    // eyeBlinkShapes는 blendShapes[0].categories 형태로 전달됨
-    const eyeBlinkLeftShape = eyeBlinkShapes.find((shape: any) => shape.categoryName === "eyeBlinkLeft");
-    const eyeBlinkRightShape = eyeBlinkShapes.find((shape: any) => shape.categoryName === "eyeBlinkRight");
+  private isBlink(eyeScore: number): boolean {
 
-    if (!eyeBlinkLeftShape || !eyeBlinkRightShape) {
-      console.warn("눈 깜빡임 데이터를 찾을 수 없습니다:", eyeBlinkShapes);
-      return false;
-    }
-
-    const eyeBlinkLeftScore = eyeBlinkLeftShape.score;
-    const eyeBlinkRightScore = eyeBlinkRightShape.score;
-
-    const nowBlinkScore = (eyeBlinkLeftScore + eyeBlinkRightScore) / 2;
+    const nowBlinkScore = eyeScore;
     const nowEyeStatus: "open" | "close" = nowBlinkScore > this.blinkLimitScore ? "close" : "open";
     
     if (this.eyeStatus === "open" && nowEyeStatus === "close") {
@@ -119,37 +160,37 @@ export class BlinkSensor implements ISensor {
     return false;
   }
 
+  destructor() {
+    if (this.animationFrameId !== null) {
+      window.cancelAnimationFrame(this.animationFrameId);
+      this.animationFrameId = null;
+    }
+    
+    if (this.videoElement) {
+      this.videoElement.pause();
+      this.videoElement.srcObject = null;
+    }
+
+    if (this.worker) {
+      this.worker.terminate();
+      this.worker = null;
+    }
+
+    // Canvas 정리
+    if (this.canvas) {
+      this.canvas.width = 0;
+      this.canvas.height = 0;
+      this.canvas = null;
+      this.ctx = null;
+    }
+
+    this.isWorkerMode = false;
+  }
+
   private notifyListeners(event: string, value: number): void {
     const listener = this.listeners.get(event);
     if (listener) {
       listener(value);
-    }
-  }
-
-  getCurrentValue(): number {
-    if (this.lastBlinkTime === 0) {
-      return 0; // 아직 깜빡임이 감지되지 않았으면 0 반환
-    }
-    const currentTime = performance.now();
-    const elapsedSeconds = (currentTime - this.lastBlinkTime) / 1000;
-    return elapsedSeconds;
-  }
-
-  public async listen(event: string, listener: (value: number) => void): Promise<void> {
-    this.listeners.set(event, listener);
-    
-    if (this.faceLandmarker === undefined) {
-      await this.makeDectector();
-    }
-    this.webcamRunning = true;
-    this.startVideoStream();
-  }
-
-  public async off(event: string): Promise<void> {
-    this.listeners.delete(event);
-    
-    if (this.listeners.size === 0) {
-      this.destructor();
     }
   }
 } 
