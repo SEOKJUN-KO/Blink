@@ -1,6 +1,6 @@
 export interface IMonitor {
   startMonitoring(): void;
   stopMonitoring(): void;
-  on(eventName: string, callback: (data: any) => void): void;
-  off(eventName: string): void;
+  setWarning(eventName: string, callback: (data: any) => void): void;
+  deleteWarning(eventName: string): void;
 }
