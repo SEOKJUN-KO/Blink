@@ -5,3 +5,7 @@ export interface IMonitor {
   snapshot(): {}; // 해당 모니터에서 유용한 정보를 받는 함수
   needWarn(now: Date): boolean; // 해당 모니터에서 경고를 줄지 말지에 대한 기준으로 판단하는 함수
 }
+
+export interface AdjustableMonitor extends IMonitor {
+  setThreshold(threadhold: Number): void; // 경고와 관련한 기준을 설정하는 함수
+}
