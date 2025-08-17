@@ -12,13 +12,11 @@ export class StopMonitor implements IUseCase<ServiceType, boolean> {
 
     async execute(req: ServiceType): Promise<boolean> {
         const context = this.db.get(req);
-        if (!context) {
-            return false;
-        }
+        if (!context) { return false; }
+        
         const dbStatus = this.db.set(req, context);
-        if (!dbStatus) {
-            return false;
-        }
+        if (!dbStatus) { return false; }
+        
         context.stopMonitoring();
         this.sensor.off(req);
         return true;
