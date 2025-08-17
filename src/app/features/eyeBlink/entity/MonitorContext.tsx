@@ -14,23 +14,19 @@ export class MonitorContext implements AdjustableMonitor {
     }
 
     recordEvent(at: Date): void {
+        if (this.status !== 'ACTIVE') throw new Error('not active');
+        if (this.lastBlinkAt && at < this.lastBlinkAt) throw new Error('time back');
         this.lastBlinkAt = at;
     }
     
     snapshot(): {} {
-        return {"lastBlink": this.lastBlinkAt};
+        return {"id": this.id, "status": this.status, "lastBlink": this.lastBlinkAt, "threshold": this.threshold};
     }
 
     setThreshold(threshold: number): void {
         this.threshold = threshold
     }
     
-    needWarn(now: Date): boolean {
-        if (this.status === "ENDED") { return false; }
-        const elapsedSeconds = (now.getTime() - this.lastBlinkAt.getTime()) / 1000;
-        return elapsedSeconds >= this.threshold;
-    }
-
     public stopMonitoring(): void {
         this.status = 'ENDED';
     }
