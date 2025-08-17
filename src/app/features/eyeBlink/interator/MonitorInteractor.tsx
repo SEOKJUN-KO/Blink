@@ -1,14 +1,14 @@
 import { ISensor } from "@/app/interface/ISensor";
 import { MonitorContext } from "../entity/MonitorContext";
 import { randomUUID } from "crypto";
-import { IWarning } from "@/app/interface/IWarning";
+import { IWarningExecutor } from "@/app/interface/IWarning";
 
 export class MonitorInteractor {
     private context: MonitorContext = new MonitorContext(randomUUID(), "ENDED", new Date(), 5)
     
     constructor(
         private sensor: ISensor,
-        private warning: IWarning,
+        private warning: IWarningExecutor,
     ) {}
 
     public startMonitor() {
