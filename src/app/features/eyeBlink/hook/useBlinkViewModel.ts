@@ -1,5 +1,5 @@
-import { IMonitor } from "../../../interface/IMonitor";
-import { IWarningConfigurable } from "../../../interface/IWarningConfigurable";
+'use client';
+
 import { BlinkMonitor } from "../domain/BlinkMonitor";
 import { BlinkSensor } from "../domain/BlinkSensor";
 import { BlinkWarning } from "../domain/BlinkWarning";
@@ -11,7 +11,7 @@ export default function useBlinkViewModel() {
     const [lastBlinkInterval, setLastBlinkInterval] = useState<number>(0);
     const [isWarningEnabled, setIsWarningEnabled] = useState(true);
     const [warningThreshold, setWarningThreshold] = useState(5); // 5초
-    const monitor = useRef<IMonitor & IWarningConfigurable | null>(null);
+    const monitor = useRef<BlinkMonitor|null>(null);
 
     const start = useCallback(() => {
         if (monitor.current === null) {

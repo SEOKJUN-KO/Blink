@@ -1,5 +1,7 @@
+import { ServiceType } from "../type/ServiceType";
+
 export interface ISensor {
   getCurrentValue(): number;
-  listen(event: string, listener: (value: any) => void): void;
-  off(event: string): void;
+  listen(event: ServiceType, callback: (value: any) => void): void;
+  off(event: ServiceType): void;
 } 

@@ -1,9 +1,7 @@
-import { IMonitor } from '../../../interface/IMonitor';
-import { IWarningConfigurable } from '../../../interface/IWarningConfigurable';
 import { ISensor } from '../../../interface/ISensor';
 import { IWarning } from '../../../interface/IWarning';
 
-export class BlinkMonitor implements IMonitor, IWarningConfigurable {
+export class BlinkMonitor {
   private isMonitoring: boolean = false;
   private lastBlinkTime: number = performance.now();
   private eventListeners: Map<string, (data: any) => void> = new Map();
