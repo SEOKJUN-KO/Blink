@@ -5,6 +5,7 @@ import { IMonitor } from "@/app/interface/IMonitor";
 import { IWarningExecutor, IWarningToolManager, WarningToolType, WarnOption } from "@/app/interface/IWarning";
 import { StopMonitorUC } from "@/app/features/eyeBlink/useCase/StopMonitorUC";
 import { SetWarnToolUC } from "../useCase/SetWarnToolUC";
+import { IWarnFactory } from "@/app/factory/WarnFactory";
 
 export interface BlinkController {
     monitorStart(): void
@@ -18,6 +19,7 @@ export class BlinkViewController implements BlinkController{
         private db: DBGateway<string, IMonitor>,
         private warn: IWarningExecutor,
         private warnTool: IWarningToolManager,
+        private warnFactory: IWarnFactory,
     ) {}
     
     public monitorStart(): void {
@@ -29,6 +31,7 @@ export class BlinkViewController implements BlinkController{
     }
 
     public addWarnTool(toolType: WarningToolType, options: WarnOption): void {
-        new SetWarnToolUC(this.warnTool).execute({type: 'blink', toolType: toolType, options: options})
+        const warnClass = this.warnFactory.create(toolType, options)
+        new SetWarnToolUC(this.warnTool).execute({type: 'blink', toolType: toolType, warn: warnClass})
     }
 }
