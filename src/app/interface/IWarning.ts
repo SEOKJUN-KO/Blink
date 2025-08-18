@@ -1,13 +1,15 @@
-import { ServiceType } from "../type/ServiceType"
+export interface IWarn {
+  execute(snapshot: monitorSnapshot): {stop: () => {}}
+}
 
 export interface IWarningToolManager {
-  addTool(type: WarningToolType, options: WarnOption): void
+  addTool(type: WarningToolType, warn: IWarn): void
   deleteTool(type: WarningToolType): void
 } 
 
 export interface IWarningExecutor {
-  setWarning(type: ServiceType, snapshot: monitorSnapshot): void
-  endWarning(type: ServiceType): void
+  setWarning(snapshot: monitorSnapshot): void
+  endWarning(): void
 }
 
 export type WarnOption = {
