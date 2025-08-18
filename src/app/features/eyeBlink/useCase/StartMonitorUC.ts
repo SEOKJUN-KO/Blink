@@ -1,33 +1,33 @@
 import { DBGateway } from "@/app/interface/DBGateway";
-import { IMonitor } from "@/app/interface/IMonitor";
-import { IWarningExecutor } from "@/app/interface/IWarning";
+import { ISensor } from "@/app/interface/ISensor";
 import { ServiceType } from "@/app/type/ServiceType";
+import { IUseCase } from "@/app/interface/IUseCase"
+import { IMonitor } from "@/app/interface/IMonitor";
+import { BlinkMonitorContext } from "../entity/BlinkMonitorContext";
+import { IWarningExecutor } from "@/app/interface/IWarning";
 
-export class StartMonitorUC {
-  constructor(
-    private binder: SensorBinder,
-    private contextF: MonitorContextFactory,
-    private warn: IWarningExecutor,
-    private db: DBGateway<string, IMonitor>,
-    private policy: WarningPolicy, // ← 서비스별 로직은 여기
-  ) {}
+export class StartMonitorUC implements IUseCase<{ type: ServiceType}, boolean> {
+    private context: BlinkMonitorContext;
 
-  async execute(req: { type: ServiceType; initial?: any }): Promise<{ stop(): void }> {
-    const context = this.contextF.create(req.type, req.initial);
-    if (!this.db.set(req.type, context)) throw new Error("DB set failed");
+    constructor(
+        private sensor: ISensor,
+        private db: DBGateway<string, IMonitor>,
+        private warn: IWarningExecutor,
+    ) {
+        this.context = new BlinkMonitorContext('ENDED', new Date(), 5);
+    }
 
-    context.startMonitoring();
+    async execute(req: {type: ServiceType}): Promise<boolean> {
+        const dbStatus = this.db.set(req.type, this.context)
+        if (!dbStatus) { return false }
+        this.sensor.listen(req.type, this.eventCallback)
+        return true
+    }
 
-    const unbind = await this.binder.bind(req.type, (raw: any) => {
-      this.policy.onEvent(req.type, context, raw, this.warn);
-    });
-
-    return {
-      stop: () => {
-        unbind();
-        context.stopMonitoring();
-        this.db.delete(req.type);
-      },
+    private eventCallback = (): void => {
+        const data = this.db.get('blink')?.snapshot()
+        if (data === undefined || data['treshold'] === undefined) { return ; }
+        const treshold = data['treshold']
+        this.warn.setWarning('blink', {treshold: treshold})
     };
-  }
 }
