@@ -1,5 +1,5 @@
-export interface DBGateway<Key, Out, Data> {
-    get(key: Key): Out;
+export interface DBGateway<Key, Data> {
+    get(key: Key): null | Data;
     set(key: Key, data: Data): boolean;
     delete(key: Key): boolean;
 }
