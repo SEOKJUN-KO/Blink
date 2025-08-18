@@ -1,9 +1,9 @@
 import { ISensor } from "@/app/interface/ISensor";
-import { StartMonitorUC } from "../useCase/StartMonitorUC";
+import { StartMonitorUC } from "@/app/features/eyeBlink/useCase/StartMonitorUC";
 import { DBGateway } from "@/app/interface/DBGateway";
 import { IMonitor } from "@/app/interface/IMonitor";
 import { IWarningExecutor } from "@/app/interface/IWarning";
-// import { StopMonitorUC } from "@/app/features/eyeBlink/useCase/StartMonitorUC";
+import { StopMonitorUC } from "@/app/features/eyeBlink/useCase/StopMonitorUC";
 
 export interface BlinkController {
     monitorStart(): void
@@ -22,6 +22,6 @@ export class BlinkViewController implements BlinkController{
     }
 
     public monitorStop(): void {
-    //     new StopMonitorUC(this.sensor, this.db).execute('blink')
+        new StopMonitorUC(this.sensor, this.db).execute('blink')
     }
 }
