@@ -5,6 +5,7 @@ import { IUseCase } from "@/app/interface/IUseCase"
 import { IMonitor } from "@/app/interface/IMonitor";
 import { BlinkMonitorContext } from "../entity/BlinkMonitorContext";
 import { IWarningExecutor } from "@/app/interface/IWarning";
+import { IDefaultPresenter } from "@/app/interface/IPresenter";
 
 export class StartMonitorUC implements IUseCase<{ type: ServiceType}, boolean> {
 
@@ -12,6 +13,7 @@ export class StartMonitorUC implements IUseCase<{ type: ServiceType}, boolean> {
         private sensor: ISensor,
         private db: DBGateway<string, IMonitor>,
         private warn: IWarningExecutor,
+        private presenter: IDefaultPresenter<any>,
     ) {
         
     }
@@ -23,6 +25,7 @@ export class StartMonitorUC implements IUseCase<{ type: ServiceType}, boolean> {
         const dbStatus = this.db.set(req.type, context)
         if (!dbStatus) { return false }
         // this.sensor.listen(req.type, this.eventCallback)
+        this.presenter.present(context.snapshot())
         return true
     }
 

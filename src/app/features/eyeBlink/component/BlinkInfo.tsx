@@ -1,7 +1,7 @@
 'use client';
 
 interface BlinkInfoProps {
-  lastBlinkInterval: number;
+  lastBlinkInterval: Date;
 }
 
 export default function BlinkInfo({ lastBlinkInterval }: BlinkInfoProps) {
