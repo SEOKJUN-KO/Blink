@@ -29,10 +29,10 @@ export class StartMonitorUC implements IUseCase<{ type: ServiceType}, boolean> {
         return true
     }
 
-    private eventCallback = (): void => {
+    private eventCallback = (value: number): void => {
         const data = this.db.get('blink')?.snapshot()
-        if (data === undefined || data['treshold'] === undefined) { return ; }
-        const treshold = data['treshold']
-        // this.warn.setWarning({treshold: treshold})
+        if (data == undefined || data.threshold == undefined) { return ; }
+        const threshold = data.threshold
+        this.warn.setWarning({threshold: threshold})
     };
 }

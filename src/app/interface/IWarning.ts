@@ -1,5 +1,5 @@
 export interface IWarn {
-  execute(snapshot: monitorSnapshot): {stop: () => {}}
+  execute(snapshot: monitorSnapshot): {stop: () => void }
 }
 
 export interface IWarningToolManager {
@@ -19,7 +19,7 @@ export type WarnOption = {
 
 export type monitorSnapshot = {
   lastBlinkAt?: Date | null;
-  treshold?: number;
+  threshold?: number;
 }
 
 export type WarningToolType = 'PIP' | 'Sound';

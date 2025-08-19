@@ -154,7 +154,6 @@ export class BlinkSensor implements ISensor {
     else if (this.eyeStatus === "close" && nowEyeStatus === "open") {
       this.eyeStatus = "open";
       this.lastBlinkTime = performance.now();
-      console.log('blink')
       return true; // 감았다 뜬 것
     }
     return false;

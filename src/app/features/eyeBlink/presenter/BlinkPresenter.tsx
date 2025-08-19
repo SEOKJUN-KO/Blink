@@ -15,7 +15,7 @@ export class BlinkPresenter implements IDefaultPresenter <any>{
         isRunning: response.status === 'ACTIVE' ? true : false,
         lastBlinkInterval: response.lastBlinkAt,
         isWarningEnabled: true,
-        warningThreshold: response.treshold,
+        warningThreshold: response.threshold,
     };
     this.onPresent(viewModel); // 뷰 업데이트
   }
