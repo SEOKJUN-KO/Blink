@@ -1,27 +1,32 @@
 'use client';
 
-import BlinkInfo from './BlinkInfo';
-import WarningSettings from './WarningSettings';
-import StatusIndicator from './StatusIndicator';
-import ControlButton from './ControlButton';
-import VideoDisplay from './VideoDisplay';
-import { useEffect, useRef, useState } from 'react';
+// import BlinkInfo from './BlinkInfo';
+// import WarningSettings from './WarningSettings';
+// import StatusIndicator from './StatusIndicator';
+// import ControlButton from './ControlButton';
+// import VideoDisplay from './VideoDisplay';
+import { useEffect, useState } from 'react';
 import { BlinkViewController } from '../controller/BlinkViewController';
 import { BlinkSensor } from '../domain/BlinkSensor';
-import { BlinkWarning } from '../domain/BlinkWarning';
+import { WarningManager } from '@/app/domain/WarningManager';
+import { WarnFactory } from '@/app/factory/WarnFactory';
+import { MonitorContextRepo } from '@/app/db/InmemoryHash';
+import useBlinkViewModel from '../hook/useBlinkViewModel';
 
 export default function BlinkContainer() {
 
-  const videoRef = useRef<HTMLVideoElement>(null);
+  const {videoRef} = useBlinkViewModel()
   const [controller, setController] = useState<BlinkViewController | null>(null);
 
   useEffect(() => {
     if (!videoRef.current) return;
+    const warnManager = new WarningManager()
     const c = new BlinkViewController(
-      new BlinkSensor(videoRef),
+      new BlinkSensor(videoRef.current),
       new MonitorContextRepo(),
-      new BlinkWarning(),
-      new BlinkWarning()
+      warnManager,
+      warnManager,
+      new WarnFactory()
     );
     setController(c);
     return () => c.monitorStop();
