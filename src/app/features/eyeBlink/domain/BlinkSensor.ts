@@ -1,3 +1,4 @@
+import { ServiceType } from '@/app/type/ServiceType';
 import { ISensor } from '../../../interface/ISensor';
 
 export class BlinkSensor implements ISensor {
@@ -41,7 +42,7 @@ export class BlinkSensor implements ISensor {
     
     try {
       this.startVideoStream();
-      // this.worker = await this.createWorker();
+      this.worker = await this.createWorker();
       this.isWorkerMode = true;
     } catch (error) {
       this.destructor();
@@ -95,7 +96,7 @@ export class BlinkSensor implements ISensor {
         break;
       case 'eyeStatus':
         if(this.isBlink(data.status)) {
-          this.notifyListeners('blinkDetected', this.lastBlinkTime);
+          this.notifyListeners('blink', this.lastBlinkTime);
         }
         break;
       case 'error':
@@ -144,7 +145,6 @@ export class BlinkSensor implements ISensor {
   private blinkLimitScore = 0.4;
   private lastBlinkTime = 0;
   private isBlink(eyeScore: number): boolean {
-
     const nowBlinkScore = eyeScore;
     const nowEyeStatus: "open" | "close" = nowBlinkScore > this.blinkLimitScore ? "close" : "open";
     
@@ -154,6 +154,7 @@ export class BlinkSensor implements ISensor {
     else if (this.eyeStatus === "close" && nowEyeStatus === "open") {
       this.eyeStatus = "open";
       this.lastBlinkTime = performance.now();
+      console.log('blink')
       return true; // 감았다 뜬 것
     }
     return false;
@@ -186,7 +187,7 @@ export class BlinkSensor implements ISensor {
     this.isWorkerMode = false;
   }
 
-  private notifyListeners(event: string, value: number): void {
+  private notifyListeners(event: ServiceType, value: number): void {
     const listener = this.listeners.get(event);
     if (listener) {
       listener(value);

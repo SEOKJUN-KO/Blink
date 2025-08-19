@@ -20,7 +20,7 @@ export class StopMonitorUC implements IUseCase<{ type: ServiceType}, boolean> {
         ctx.stopMonitoring()
         const dbStatus = this.db.set(req.type, ctx)
         if (!dbStatus) { return false }
-        // this.sensor.off(req.type)
+        this.sensor.off(req.type)
         // this.warn.endWarning(req.type)
         this.presenter.present(ctx.snapshot())
         return true

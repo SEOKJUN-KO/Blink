@@ -3,7 +3,7 @@
 import { BlinkMonitor } from "../domain/BlinkMonitor";
 import { BlinkSensor } from "../domain/BlinkSensor";
 import { BlinkWarning } from "../domain/BlinkWarning";
-import { useRef, useState, useCallback, useMemo } from "react";
+import { useRef, useState, useCallback, useMemo, useEffect } from "react";
 
 export default function useBlinkViewModel() {
     const videoRef = useRef<HTMLVideoElement>(null);
@@ -13,59 +13,69 @@ export default function useBlinkViewModel() {
     const [warningThreshold, setWarningThreshold] = useState(5); // 5초
     const monitor = useRef<BlinkMonitor|null>(null);
 
-    // const start = useCallback(() => {
-    //     if (monitor.current === null) {
-    //         const warning = new BlinkWarning();
-    //         if (videoRef.current) {
-    //             monitor.current = new BlinkMonitor(new BlinkSensor(videoRef.current), warning);
-    //             // 이벤트 리스너 등록
-    //             monitor.current.on('blinkDetected', (data) => {
-    //                 setLastBlinkInterval(data.elapsedSeconds);
-    //             });
-    //         }
-    //     }
+    useEffect(() => {
+        if (videoRef.current) {
+            const warning = new BlinkWarning();
+            const sensor = new BlinkSensor(videoRef.current);
+            monitor.current = new BlinkMonitor(sensor, warning);
 
-    //     if (monitor.current) {
-    //         setIsRunning(true);
-    //         monitor.current.startMonitoring();
-    //     }
-    // }, []);
+            monitor.current.on('blinkDetected', (data) => {
+                setLastBlinkInterval(data.elapsedSeconds);
+            });
 
-    // const stop = useCallback(() => {
-    //     if (monitor.current) {
-    //         setIsRunning(false);
-    //         monitor.current.stopMonitoring();
-    //     }
-    // }, []);
+            monitor.current.startMonitoring();
+            setIsRunning(true);
+        }
 
-    // const toggleWarning = useCallback(() => {
-    //     const newWarningEnabled = !isWarningEnabled;
-    //     setIsWarningEnabled(newWarningEnabled);
+        return () => {
+            if (monitor.current) {
+                monitor.current.stopMonitoring();
+            }
+        };
+    }, [videoRef]);
+
+    const start = useCallback(() => {
+        if (monitor.current) {
+            setIsRunning(true);
+            monitor.current.startMonitoring();
+        }
+    }, []);
+
+    const stop = useCallback(() => {
+        if (monitor.current) {
+            setIsRunning(false);
+            monitor.current.stopMonitoring();
+        }
+    }, []);
+
+    const toggleWarning = useCallback(() => {
+        const newWarningEnabled = !isWarningEnabled;
+        setIsWarningEnabled(newWarningEnabled);
         
-    //     if (monitor.current) {
-    //         monitor.current.setWarningEnabled(newWarningEnabled);
-    //     }
-    // }, [isWarningEnabled]);
+        if (monitor.current) {
+            monitor.current.setWarningEnabled(newWarningEnabled);
+        }
+    }, [isWarningEnabled]);
 
-    // const updateWarningThreshold = useCallback((seconds: number) => {
-    //     setWarningThreshold(seconds);
+    const updateWarningThreshold = useCallback((seconds: number) => {
+        setWarningThreshold(seconds);
         
-    //     if (monitor.current) {
-    //         monitor.current.setWarningThreshold(seconds);
-    //     }
-    // }, []);
+        if (monitor.current) {
+            monitor.current.setWarningThreshold(seconds);
+        }
+    }, []);
 
-    // const handleStart = useCallback(() => {
-    //     if (videoRef.current) {
-    //         start();
-    //     } else {
-    //         console.error("비디오 요소가 준비되지 않았습니다.");
-    //     }
-    // }, [start]);
+    const handleStart = useCallback(() => {
+        if (videoRef.current) {
+            start();
+        } else {
+            console.error("비디오 요소가 준비되지 않았습니다.");
+        }
+    }, [start]);
 
-    // const handleStop = useCallback(() => {
-    //     stop();
-    // }, [stop]);
+    const handleStop = useCallback(() => {
+        stop();
+    }, [stop]);
 
     return useMemo(() => ({
         videoRef,
@@ -73,11 +83,19 @@ export default function useBlinkViewModel() {
         lastBlinkInterval,
         isWarningEnabled,
         warningThreshold,
+        handleStart,
+        handleStop,
+        toggleWarning,
+        updateWarningThreshold,
     }), [
         videoRef,
         isRunning,
         lastBlinkInterval,
         isWarningEnabled,
         warningThreshold,
+        handleStart,
+        handleStop,
+        toggleWarning,
+        updateWarningThreshold,
     ]);
 }

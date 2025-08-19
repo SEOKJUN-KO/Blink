@@ -15,7 +15,7 @@ const VideoDisplay = memo(function VideoDisplay({ videoRef, isRunning }: VideoDi
   }, [isRunning]);
 
   const videoOpacity = useMemo(() => {
-    return isRunning ? 1 : 0.3;
+    return isRunning ? 1 : 0;
   }, [isRunning]);
 
   return (

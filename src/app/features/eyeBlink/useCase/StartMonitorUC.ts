@@ -24,7 +24,7 @@ export class StartMonitorUC implements IUseCase<{ type: ServiceType}, boolean> {
         context.startMonitoring()
         const dbStatus = this.db.set(req.type, context)
         if (!dbStatus) { return false }
-        // this.sensor.listen(req.type, this.eventCallback)
+        this.sensor.listen(req.type, this.eventCallback)
         this.presenter.present(context.snapshot())
         return true
     }
@@ -33,6 +33,6 @@ export class StartMonitorUC implements IUseCase<{ type: ServiceType}, boolean> {
         const data = this.db.get('blink')?.snapshot()
         if (data === undefined || data['treshold'] === undefined) { return ; }
         const treshold = data['treshold']
-        this.warn.setWarning({treshold: treshold})
+        // this.warn.setWarning({treshold: treshold})
     };
 }
