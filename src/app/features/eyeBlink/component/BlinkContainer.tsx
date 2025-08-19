@@ -1,10 +1,10 @@
 'use client';
 
-// import BlinkInfo from './BlinkInfo';
+import BlinkInfo from './BlinkInfo';
 // import WarningSettings from './WarningSettings';
-// import StatusIndicator from './StatusIndicator';
-// import ControlButton from './ControlButton';
-// import VideoDisplay from './VideoDisplay';
+import StatusIndicator from './StatusIndicator';
+import ControlButton from './ControlButton';
+import VideoDisplay from './VideoDisplay';
 import { useEffect, useState } from 'react';
 import { BlinkViewController } from '../controller/BlinkViewController';
 import { BlinkSensor } from '../domain/BlinkSensor';
@@ -15,7 +15,7 @@ import useBlinkViewModel from '../hook/useBlinkViewModel';
 
 export default function BlinkContainer() {
 
-  const {videoRef} = useBlinkViewModel()
+  const {videoRef, isRunning, lastBlinkInterval, isWarningEnabled, warningThreshold} = useBlinkViewModel()
   const [controller, setController] = useState<BlinkViewController | null>(null);
 
   useEffect(() => {
@@ -35,26 +35,31 @@ export default function BlinkContainer() {
   return (
     <div className="w-full max-w-md bg-white rounded-3xl shadow-2xl overflow-hidden">
       {/* 콘텐츠 영역 */}
-      {/* <div className="p-6 space-y-4">
+      <div className="p-6 space-y-4">
         <VideoDisplay videoRef={videoRef} isRunning={isRunning} />
         <BlinkInfo lastBlinkInterval={lastBlinkInterval} />
-        <WarningSettings 
+        {/* <WarningSettings 
           isWarningEnabled={isWarningEnabled}
           warningThreshold={warningThreshold}
           onToggleWarning={toggleWarning}
           onUpdateThreshold={updateWarningThreshold}
-        />
+        /> */}
         <StatusIndicator isRunning={isRunning} />
-      </div> */}
+      </div>
 
       {/* 하단 버튼 */}
-      {/* <div className="px-6 pb-6">
+      <div className="px-6 pb-6">
         <ControlButton 
           isRunning={isRunning}
-          onStart={handleStart}
-          onStop={handleStop}
+          onStart={() => {
+            if (controller) { controller.monitorStart(); } 
+            else { alert('error'); }
+          }}
+          onStop={() => {
+            if (controller) { controller.monitorStop();}
+          }}
         />
-      </div> */}
+      </div>
     </div>
   );
 } 

@@ -38,13 +38,12 @@ export class BlinkSensor implements ISensor {
       console.warn('워커 모드가 이미 활성화되어 있습니다.');
       return;
     }
+    
     try {
       this.startVideoStream();
-
-      this.worker = await this.createWorker();
+      // this.worker = await this.createWorker();
       this.isWorkerMode = true;
     } catch (error) {
-      console.error('워커 모드 시작 실패:', error);
       this.destructor();
       throw error;
     }

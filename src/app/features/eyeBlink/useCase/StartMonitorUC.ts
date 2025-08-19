@@ -7,20 +7,22 @@ import { BlinkMonitorContext } from "../entity/BlinkMonitorContext";
 import { IWarningExecutor } from "@/app/interface/IWarning";
 
 export class StartMonitorUC implements IUseCase<{ type: ServiceType}, boolean> {
-    private context: BlinkMonitorContext;
 
     constructor(
         private sensor: ISensor,
         private db: DBGateway<string, IMonitor>,
         private warn: IWarningExecutor,
     ) {
-        this.context = new BlinkMonitorContext('ENDED', new Date(), 5);
+        
     }
 
     async execute(req: {type: ServiceType}): Promise<boolean> {
-        const dbStatus = this.db.set(req.type, this.context)
+        console.log("execute")
+        let context = this.db.get(req.type) ??  new BlinkMonitorContext('ENDED', new Date(), 5)
+        context.startMonitoring()
+        const dbStatus = this.db.set(req.type, context)
         if (!dbStatus) { return false }
-        this.sensor.listen(req.type, this.eventCallback)
+        // this.sensor.listen(req.type, this.eventCallback)
         return true
     }
 
@@ -28,6 +30,6 @@ export class StartMonitorUC implements IUseCase<{ type: ServiceType}, boolean> {
         const data = this.db.get('blink')?.snapshot()
         if (data === undefined || data['treshold'] === undefined) { return ; }
         const treshold = data['treshold']
-        this.warn.setWarning('blink', {treshold: treshold})
+        this.warn.setWarning({treshold: treshold})
     };
 }
