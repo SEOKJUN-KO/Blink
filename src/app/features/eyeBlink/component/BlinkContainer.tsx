@@ -42,7 +42,7 @@ export default function BlinkContainer() {
       {/* 콘텐츠 영역 */}
       <div className="p-6 space-y-4">
         <VideoDisplay videoRef={videoRef} isRunning={vm?.isRunning ?? false} />
-        <BlinkInfo lastBlinkAt={vm?.lastBlinkAt ?? new Date()} />
+        <BlinkInfo lastBlinkAt={vm?.lastBlinkAt ?? new Date()} isRunning = {vm?.isRunning ?? false} />
         <WarningThresholdControl
           warningThreshold={vm?.warningThreshold ?? 5}
           onUpdateThreshold={(threshold) => controller?.setThreshold(threshold)}

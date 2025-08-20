@@ -4,13 +4,13 @@ import { useState, useEffect } from 'react';
 
 interface BlinkInfoProps {
   lastBlinkAt: Date | null;
+  isRunning: boolean;
 }
 
-export default function BlinkInfo({ lastBlinkAt }: BlinkInfoProps) {
+export default function BlinkInfo({ lastBlinkAt, isRunning }: BlinkInfoProps) {
   const [elapsedTime, setElapsedTime] = useState(0);
-
   useEffect(() => {
-    if (lastBlinkAt) {
+    if (lastBlinkAt && isRunning) {
       const interval = setInterval(() => {
         const now = new Date();
         const diff = (now.getTime() - lastBlinkAt.getTime()) / 1000;
@@ -20,7 +20,7 @@ export default function BlinkInfo({ lastBlinkAt }: BlinkInfoProps) {
     } else {
       setElapsedTime(0);
     }
-  }, [lastBlinkAt]);
+  }, [lastBlinkAt, isRunning]);
 
   // 최대 999.99초까지 6글자(최대 "999.99")로 고정, 숫자 아닌 경우 '--'로 6글자 맞춤
   const formattedElapsed =

@@ -26,6 +26,7 @@ export class SetThresholdUC implements IUseCase<{ type: ServiceType}, boolean> {
         const data = context.snapshot()
         if (data.satus === 'ACTIVE') {
             this.sensor.listen(req.type, this.eventCallback)
+            context.recordEvent(new Date())
         }
         data['warnTools'] = this.warnTools.getTools()
         this.presenter.present(data)
@@ -37,5 +38,6 @@ export class SetThresholdUC implements IUseCase<{ type: ServiceType}, boolean> {
         if (data == undefined || data.threshold == undefined) { return ; }
         const threshold = data.threshold
         this.warn.setWarning({threshold: threshold})
+        this.presenter.present({lastBlinkAt: new Date()})
     };
 }
