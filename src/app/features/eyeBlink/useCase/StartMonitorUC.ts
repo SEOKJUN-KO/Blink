@@ -19,7 +19,6 @@ export class StartMonitorUC implements IUseCase<{ type: ServiceType}, boolean> {
     async execute(req: {type: ServiceType}): Promise<boolean> {
         let context = this.db.get(req.type) ??  new BlinkMonitorContext('ENDED', new Date(), 5)
         context.startMonitoring()
-        context.recordEvent(new Date())
         const dbStatus = this.db.set(req.type, context)
         if (!dbStatus) { return false }
         this.sensor.listen(req.type, this.eventCallback)
