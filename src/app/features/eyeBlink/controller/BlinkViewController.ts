@@ -32,7 +32,7 @@ export class BlinkViewController implements BlinkController{
     ) {}
     
     public monitorStart(): void {
-        new StartMonitorUC(this.sensor, this.db , this.warn, this.warnTools, this.presenter).execute({type: 'blink'})
+        new StartMonitorUC(this.sensor, this.db , this.warn, this.presenter).execute({type: 'blink'})
     }
 
     public monitorStop(): void {
