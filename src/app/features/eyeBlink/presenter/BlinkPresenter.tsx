@@ -18,7 +18,7 @@ export class BlinkPresenter implements IDefaultPresenter <any>{
 
     present(response: any): void {
       const newVM: BlinkViewModel = {
-        isRunning: response.status === 'ACTIVE' ? true : (this.prevVM?.isRunning ?? false),
+        isRunning: response.status == undefined ? (this.prevVM?.isRunning ?? false) : response.status === "ACTIVE" ? true : false ,
         lastBlinkAt: response.lastBlinkAt !== undefined ? response.lastBlinkAt : (this.prevVM?.lastBlinkAt ?? new Date()),
         warningThreshold: response.threshold !== undefined ? response.threshold : (this.prevVM?.warningThreshold ?? 5),
         soundOn: response.warnTools ? response.warnTools.includes('Sound') : (this.prevVM?.soundOn ?? false)

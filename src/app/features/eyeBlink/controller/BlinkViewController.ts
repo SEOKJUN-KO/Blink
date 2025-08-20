@@ -36,7 +36,7 @@ export class BlinkViewController implements BlinkController{
     }
 
     public monitorStop(): void {
-        new StopMonitorUC(this.sensor, this.db, this.warn, this.warnTools, this.presenter).execute({type: 'blink'})
+        new StopMonitorUC(this.sensor, this.db, this.warn, this.presenter).execute({type: 'blink'})
     }
 
     public addWarnTool(toolType: WarningToolType, options: WarnOption): void {
