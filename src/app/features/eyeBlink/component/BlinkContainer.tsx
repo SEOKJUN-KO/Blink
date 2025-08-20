@@ -49,7 +49,7 @@ export default function BlinkContainer() {
         />
         <SoundWarningSettings 
           isWarningEnabled={vm?.soundOn ?? false}
-          onToggleWarning={() => controller?.addWarnTool('Sound', { volumn: 50 })}
+          onToggleWarning={() => vm?.soundOn ? controller?.deleteWarnTool('Sound') : controller?.addWarnTool('Sound', {volumn: 50})}
         />
         <StatusIndicator isRunning={vm?.isRunning ?? false} />
       </div>

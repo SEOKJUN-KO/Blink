@@ -9,6 +9,7 @@ import { StartMonitorUC } from "@/app/features/eyeBlink/useCase/StartMonitorUC";
 import { StopMonitorUC } from "@/app/features/eyeBlink/useCase/StopMonitorUC";
 import { SetWarnToolUC } from "../useCase/SetWarnToolUC";
 import { SetThresholdUC } from "../useCase/SetThresholdUC";
+import { DeleteWarnToolUC } from "../useCase/DeleteWarnToolUC";
 
 
 
@@ -16,6 +17,7 @@ export interface BlinkController {
     monitorStart(): void
     monitorStop(): void
     addWarnTool(toolType: WarningToolType, options: WarnOption): void
+    deleteWarnTool(toolType: WarningToolType): void
     setThreshold(seconds: number): void;
 }
 
@@ -40,6 +42,10 @@ export class BlinkViewController implements BlinkController{
     public addWarnTool(toolType: WarningToolType, options: WarnOption): void {
         const warnClass = this.warnFactory.create(toolType, options)
         new SetWarnToolUC(this.db, this.warnTools, this.presenter).execute({type: 'blink', toolType: toolType, warn: warnClass})
+    }
+
+    public deleteWarnTool(toolType: WarningToolType): void {
+        new DeleteWarnToolUC(this.db, this.warnTools, this.presenter).execute({type: 'blink', toolType: toolType})
     }
     
     public setThreshold(threshold: number): void {
