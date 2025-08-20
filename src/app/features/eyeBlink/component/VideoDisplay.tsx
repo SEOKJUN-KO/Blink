@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, memo } from 'react';
+import { memo } from 'react';
 
 interface VideoDisplayProps {
   videoRef: React.RefObject<HTMLVideoElement | null>;
@@ -8,23 +8,28 @@ interface VideoDisplayProps {
 }
 
 const VideoDisplay = memo(function VideoDisplay({ videoRef, isRunning }: VideoDisplayProps) {
-  const videoBorderStyle = useMemo(() => {
-    return isRunning 
-      ? "border-blue-400 shadow-lg" 
-      : "border-gray-200 bg-gray-50";
-  }, [isRunning]);
-
-  const videoOpacity = useMemo(() => {
-    return isRunning ? 1 : 0;
-  }, [isRunning]);
-
   return (
     <div className="relative">
-      <video 
-        ref={videoRef} 
-        className={`w-full h-40 object-cover rounded-2xl border-2 transition-all duration-300 ${videoBorderStyle}`}
-        style={{ opacity: videoOpacity }}
-      />
+      <div
+        className={`w-full h-40 object-cover rounded-2xl border-2 transition-all duration-300 flex items-center justify-center bg-gray-100 relative overflow-hidden select-none cursor-default ${
+          isRunning ? 'border-blue-400 shadow-lg' : 'border-gray-200'
+        }`}
+      >
+        {isRunning && (
+          <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-blue-700/60 to-indigo-500/60 z-10">
+            <div className="flex items-center space-x-2 mb-2 animate-pulse">
+              <span className="text-2xl">🔵</span>
+              <span className="text-white text-lg font-bold drop-shadow">카메라 ON</span>
+            </div>
+            <span className="text-white text-xs opacity-80">눈 깜빡임을 감지 중입니다</span>
+          </div>
+        )}
+        <video
+          ref={videoRef}
+          className="w-full h-40 object-cover rounded-2xl"
+          style={{ opacity: 0 }}
+        />
+      </div>
       {!isRunning && (
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="text-center">
