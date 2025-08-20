@@ -164,6 +164,16 @@ export class BlinkSensor implements ISensor {
       window.cancelAnimationFrame(this.animationFrameId);
       this.animationFrameId = null;
     }
+
+    if (this.videoElement) {
+      this.videoElement.pause();
+      // getUserMedia로 할당된 스트림 중단
+      const stream = this.videoElement.srcObject as MediaStream | null;
+      if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+      }
+      this.videoElement.srcObject = null;
+    }
     
     if (this.videoElement) {
       this.videoElement.pause();
