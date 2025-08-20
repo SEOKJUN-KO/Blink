@@ -20,7 +20,6 @@ export class StartMonitorUC implements IUseCase<{ type: ServiceType}, boolean> {
     }
 
     async execute(req: {type: ServiceType}): Promise<boolean> {
-        console.log("execute")
         let context = this.db.get(req.type) ??  new BlinkMonitorContext('ENDED', new Date(), 5)
         context.startMonitoring()
         const dbStatus = this.db.set(req.type, context)
@@ -37,5 +36,6 @@ export class StartMonitorUC implements IUseCase<{ type: ServiceType}, boolean> {
         if (data == undefined || data.threshold == undefined) { return ; }
         const threshold = data.threshold
         this.warn.setWarning({threshold: threshold})
+        this.presenter.present({lastBlinkAt: new Date()})
     };
 }

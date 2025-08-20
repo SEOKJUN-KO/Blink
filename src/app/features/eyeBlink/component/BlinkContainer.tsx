@@ -1,6 +1,6 @@
 'use client';
 
-// import BlinkInfo from './BlinkInfo';
+import BlinkInfo from './BlinkInfo';
 import StatusIndicator from './StatusIndicator';
 import ControlButton from './ControlButton';
 import VideoDisplay from './VideoDisplay';
@@ -42,7 +42,7 @@ export default function BlinkContainer() {
       {/* 콘텐츠 영역 */}
       <div className="p-6 space-y-4">
         <VideoDisplay videoRef={videoRef} isRunning={vm?.isRunning ?? false} />
-        {/* <BlinkInfo lastBlinkInterval={vm?.lastBlinkInterval ?? '0'} /> */}
+        <BlinkInfo lastBlinkAt={vm?.lastBlinkAt ?? new Date()} />
         <WarningThresholdControl
           warningThreshold={vm?.warningThreshold ?? 5}
           onUpdateThreshold={(threshold) => controller?.setThreshold(threshold)}

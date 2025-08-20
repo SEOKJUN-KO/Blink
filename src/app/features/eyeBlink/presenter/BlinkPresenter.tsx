@@ -1,9 +1,8 @@
 import { IDefaultPresenter } from "@/app/interface/IPresenter";
-import { WarningToolType } from "@/app/interface/IWarning";
 
 export type BlinkViewModel = {
   isRunning: boolean;
-  lastBlinkInterval: Date;
+  lastBlinkAt: Date;
   warningThreshold: number;
   soundOn: boolean;
 }
@@ -13,15 +12,18 @@ export type BlinkPresenterResponse = {
 }
 
 export class BlinkPresenter implements IDefaultPresenter <any>{
+    private prevVM: BlinkViewModel | null = null;
+
     constructor(private onPresent: (vm: BlinkViewModel) => void) {}
 
-  present(response: any): void {
-    const viewModel: BlinkViewModel = {
-      isRunning: response.status === 'ACTIVE' ? true : false,
-      lastBlinkInterval: response.lastBlinkAt,
-      warningThreshold: response.threshold,
-      soundOn: response.warnTools.includes('Sound')
-    };
-    this.onPresent(viewModel); // 뷰 업데이트
-  }
+    present(response: any): void {
+      const newVM: BlinkViewModel = {
+        isRunning: response.status === 'ACTIVE' ? true : (this.prevVM?.isRunning ?? false),
+        lastBlinkAt: response.lastBlinkAt !== undefined ? response.lastBlinkAt : (this.prevVM?.lastBlinkAt ?? new Date()),
+        warningThreshold: response.threshold !== undefined ? response.threshold : (this.prevVM?.warningThreshold ?? 5),
+        soundOn: response.warnTools ? response.warnTools.includes('Sound') : (this.prevVM?.soundOn ?? false)
+      };
+      this.prevVM = newVM;
+      this.onPresent(newVM); // 뷰 업데이트
+    }
 }
