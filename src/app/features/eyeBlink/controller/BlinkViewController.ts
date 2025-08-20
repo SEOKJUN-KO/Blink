@@ -19,21 +19,21 @@ export class BlinkViewController implements BlinkController{
         private sensor: ISensor,
         private db: DBGateway<string, IMonitor>,
         private warn: IWarningExecutor,
-        private warnTool: IWarningToolManager,
+        private warnTools: IWarningToolManager,
         private warnFactory: IWarnFactory,
-        private present: IDefaultPresenter<any>,
+        private presenter: IDefaultPresenter<any>,
     ) {}
     
     public monitorStart(): void {
-        new StartMonitorUC(this.sensor, this.db, this.warn, this.present).execute({type: 'blink'})
+        new StartMonitorUC(this.sensor, this.db, this.warn, this.warnTools, this.presenter).execute({type: 'blink'})
     }
 
     public monitorStop(): void {
-        new StopMonitorUC(this.sensor, this.db, this.warn, this.present).execute({type: 'blink'})
+        new StopMonitorUC(this.sensor, this.db, this.warn, this.presenter).execute({type: 'blink'})
     }
 
     public addWarnTool(toolType: WarningToolType, options: WarnOption): void {
         const warnClass = this.warnFactory.create(toolType, options)
-        new SetWarnToolUC(this.warnTool).execute({type: 'blink', toolType: toolType, warn: warnClass})
+        new SetWarnToolUC(this.db, this.warnTools, this.presenter).execute({type: 'blink', toolType: toolType, warn: warnClass})
     }
 }

@@ -2,19 +2,35 @@ import { IWarn, monitorSnapshot, WarnOption } from "../interface/IWarning";
 
 export class SoundWarn implements IWarn {
     private audioContext: AudioContext | null = null;
+
     constructor(
         private options: WarnOption
-    ){}
+    ) {
+        // 생성자에서 AudioContext를 안전하게 초기화
+        if (typeof window !== "undefined") {
+            // 브라우저 호환성 체크
+            const AudioCtx = (window.AudioContext || (window as any).webkitAudioContext);
+            if (AudioCtx) {
+                this.audioContext = new AudioCtx();
+            } else {
+                this.audioContext = null;
+            }
+        }
+    }
     
     execute(snapshot: monitorSnapshot): { stop: () => void } {
         console.log(snapshot)
         if (!this.audioContext) {
-            console.warn('Web Audio API is not supported in this browser');
+            console.warn('이 브라우저에서는 Web Audio API를 지원하지 않습니다.');
             return { stop: () => { /* 아무것도 안 함 */ } };
         }
+        
+        const delay = typeof snapshot.threshold === "number" && snapshot.threshold < 1000
+            ? snapshot.threshold * 1000
+            : snapshot.threshold;
         const timer = setTimeout(() => {
             this.playBlinkSound();
-        }, snapshot.threshold);
+        }, delay);
         return { stop: () => { clearTimeout(timer); } };
     }
 
@@ -44,22 +60,23 @@ export class SoundWarn implements IWarn {
 
         // 두 번째 깜빡임 소리 (약간 지연)
         setTimeout(() => {
-            const oscillator2 = this.audioContext!.createOscillator();
-            const gainNode2 = this.audioContext!.createGain();
+            if (!this.audioContext) return;
+            const oscillator2 = this.audioContext.createOscillator();
+            const gainNode2 = this.audioContext.createGain();
 
             oscillator2.type = 'sine';
-            oscillator2.frequency.setValueAtTime(600, this.audioContext!.currentTime);
-            oscillator2.frequency.exponentialRampToValueAtTime(300, this.audioContext!.currentTime + 0.08);
+            oscillator2.frequency.setValueAtTime(600, this.audioContext.currentTime);
+            oscillator2.frequency.exponentialRampToValueAtTime(300, this.audioContext.currentTime + 0.08);
 
-            gainNode2.gain.setValueAtTime(0, this.audioContext!.currentTime);
-            gainNode2.gain.linearRampToValueAtTime(0.2, this.audioContext!.currentTime + 0.04);
-            gainNode2.gain.exponentialRampToValueAtTime(0.01, this.audioContext!.currentTime + 0.25);
+            gainNode2.gain.setValueAtTime(0, this.audioContext.currentTime);
+            gainNode2.gain.linearRampToValueAtTime(0.2, this.audioContext.currentTime + 0.04);
+            gainNode2.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.25);
 
             oscillator2.connect(gainNode2);
-            gainNode2.connect(this.audioContext!.destination);
+            gainNode2.connect(this.audioContext.destination);
             
-            oscillator2.start(this.audioContext!.currentTime);
-            oscillator2.stop(this.audioContext!.currentTime + 0.25);
+            oscillator2.start(this.audioContext.currentTime);
+            oscillator2.stop(this.audioContext.currentTime + 0.25);
         }, 150); // 150ms 지연
     }
 }

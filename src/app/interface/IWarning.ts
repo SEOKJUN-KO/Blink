@@ -5,6 +5,7 @@ export interface IWarn {
 export interface IWarningToolManager {
   addTool(type: WarningToolType, warn: IWarn): void
   deleteTool(type: WarningToolType): void
+  getTools(): WarningToolType[]
 } 
 
 export interface IWarningExecutor {

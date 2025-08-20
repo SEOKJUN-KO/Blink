@@ -1,7 +1,6 @@
 'use client';
 
-import BlinkInfo from './BlinkInfo';
-// import WarningSettings from './WarningSettings';
+// import BlinkInfo from './BlinkInfo';
 import StatusIndicator from './StatusIndicator';
 import ControlButton from './ControlButton';
 import VideoDisplay from './VideoDisplay';
@@ -12,6 +11,7 @@ import { WarningManager } from '@/app/domain/WarningManager';
 import { WarnFactory } from '@/app/factory/WarnFactory';
 import { MonitorContextRepo } from '@/app/db/InmemoryHash';
 import { BlinkPresenter, BlinkViewModel } from '../presenter/BlinkPresenter';
+import SoundWarningSettings from './SoundWarningSettings';
 
 export default function BlinkContainer() {
   
@@ -28,7 +28,7 @@ export default function BlinkContainer() {
       new BlinkSensor(videoRef.current),
       new MonitorContextRepo(),
       warnManager,
-      warnManager,
+      warnManager, 
       new WarnFactory(),
       presenter
     );
@@ -42,12 +42,12 @@ export default function BlinkContainer() {
       <div className="p-6 space-y-4">
         <VideoDisplay videoRef={videoRef} isRunning={vm?.isRunning ?? false} />
         {/* <BlinkInfo lastBlinkInterval={vm?.lastBlinkInterval ?? '0'} /> */}
-        {/* <WarningSettings 
-          isWarningEnabled={isWarningEnabled}
-          warningThreshold={warningThreshold}
-          onToggleWarning={toggleWarning}
-          onUpdateThreshold={updateWarningThreshold}
-        /> */}
+        <SoundWarningSettings 
+          isWarningEnabled={vm?.soundOn ?? false}
+          warningThreshold={vm?.warningThreshold ?? 0}
+          onToggleWarning={() => controller?.addWarnTool('Sound', { volumn: 50 })}
+          // onUpdateThreshold={updateWarningThreshold}
+        />
         <StatusIndicator isRunning={vm?.isRunning ?? false} />
       </div>
 

@@ -6,14 +6,14 @@ interface WarningSettingsProps {
   isWarningEnabled: boolean;
   warningThreshold: number;
   onToggleWarning: () => void;
-  onUpdateThreshold: (seconds: number) => void;
+  // onUpdateThreshold: (seconds: number) => void;
 }
 
-const WarningSettings = memo(function WarningSettings({ 
+const SoundWarningSettings = memo(function WarningSettings({ 
   isWarningEnabled, 
   warningThreshold, 
   onToggleWarning, 
-  onUpdateThreshold 
+  // onUpdateThreshold 
 }: WarningSettingsProps) {
   const warningToggleStyle = useMemo(() => {
     return isWarningEnabled ? 'bg-orange-500' : 'bg-gray-300';
@@ -41,7 +41,7 @@ const WarningSettings = memo(function WarningSettings({
           <span className="text-xs text-orange-600 font-medium">경고 임계값</span>
           <div className="flex items-center space-x-2">
             <button
-              onClick={() => onUpdateThreshold(Math.max(1, warningThreshold - 1))}
+              // onClick={() => onUpdateThreshold(Math.max(1, warningThreshold - 1))}
               className="w-6 h-6 rounded-full bg-orange-200 text-orange-600 text-xs font-bold hover:bg-orange-300"
             >
               -
@@ -50,7 +50,7 @@ const WarningSettings = memo(function WarningSettings({
               {warningThreshold}초
             </span>
             <button
-              onClick={() => onUpdateThreshold(warningThreshold + 1)}
+              // onClick={() => onUpdateThreshold(warningThreshold + 1)}
               className="w-6 h-6 rounded-full bg-orange-200 text-orange-600 text-xs font-bold hover:bg-orange-300"
             >
               +
@@ -62,4 +62,4 @@ const WarningSettings = memo(function WarningSettings({
   );
 });
 
-export default WarningSettings;
+export default SoundWarningSettings;

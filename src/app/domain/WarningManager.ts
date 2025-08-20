@@ -11,6 +11,9 @@ export class WarningManager implements IWarningExecutor, IWarningToolManager {
     deleteTool(type: WarningToolType): void {
         this.tools.delete(type)
     }
+    getTools(): WarningToolType[] {
+        return Array.from(this.tools.keys());
+    }
     
     setWarning(snapshot: monitorSnapshot): void {
         this.stopFuncs.forEach((f) => {
