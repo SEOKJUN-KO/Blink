@@ -1,23 +1,28 @@
 import { ISensor } from "@/app/interface/ISensor";
-import { StartMonitorUC } from "@/app/features/eyeBlink/useCase/StartMonitorUC";
 import { DBGateway } from "@/app/interface/DBGateway";
-import { IMonitor } from "@/app/interface/IMonitor";
+import { AdjustableMonitor } from "@/app/interface/IMonitor";
 import { IWarningExecutor, IWarningToolManager, WarningToolType, WarnOption } from "@/app/interface/IWarning";
-import { StopMonitorUC } from "@/app/features/eyeBlink/useCase/StopMonitorUC";
-import { SetWarnToolUC } from "../useCase/SetWarnToolUC";
 import { IWarnFactory } from "@/app/factory/WarnFactory";
 import { IDefaultPresenter } from "@/app/interface/IPresenter";
+
+import { StartMonitorUC } from "@/app/features/eyeBlink/useCase/StartMonitorUC";
+import { StopMonitorUC } from "@/app/features/eyeBlink/useCase/StopMonitorUC";
+import { SetWarnToolUC } from "../useCase/SetWarnToolUC";
+import { SetThresholdUC } from "../useCase/SetThresholdUC";
+
+
 
 export interface BlinkController {
     monitorStart(): void
     monitorStop(): void
     addWarnTool(toolType: WarningToolType, options: WarnOption): void
+    setThreshold(seconds: number): void;
 }
 
 export class BlinkViewController implements BlinkController{
     constructor(
         private sensor: ISensor,
-        private db: DBGateway<string, IMonitor>,
+        private db: DBGateway<string, AdjustableMonitor>,
         private warn: IWarningExecutor,
         private warnTools: IWarningToolManager,
         private warnFactory: IWarnFactory,
@@ -25,15 +30,19 @@ export class BlinkViewController implements BlinkController{
     ) {}
     
     public monitorStart(): void {
-        new StartMonitorUC(this.sensor, this.db, this.warn, this.warnTools, this.presenter).execute({type: 'blink'})
+        new StartMonitorUC(this.sensor, this.db , this.warn, this.warnTools, this.presenter).execute({type: 'blink'})
     }
 
     public monitorStop(): void {
-        new StopMonitorUC(this.sensor, this.db, this.warn, this.presenter).execute({type: 'blink'})
+        new StopMonitorUC(this.sensor, this.db, this.warn, this.warnTools, this.presenter).execute({type: 'blink'})
     }
 
     public addWarnTool(toolType: WarningToolType, options: WarnOption): void {
         const warnClass = this.warnFactory.create(toolType, options)
         new SetWarnToolUC(this.db, this.warnTools, this.presenter).execute({type: 'blink', toolType: toolType, warn: warnClass})
+    }
+    
+    public setThreshold(threshold: number): void {
+        new SetThresholdUC( this.sensor, this.db, this.warn, this.warnTools, this.presenter).execute({type: 'blink', threshold: threshold})
     }
 }

@@ -1,14 +1,14 @@
 import { DBGateway } from "../interface/DBGateway";
-import { IMonitor } from "../interface/IMonitor";
+import { AdjustableMonitor } from "../interface/IMonitor";
 
-export class MonitorContextRepo implements DBGateway<string, IMonitor> {
-    private map = new Map<string, IMonitor>();
+export class MonitorContextRepo implements DBGateway<string, AdjustableMonitor> {
+    private map = new Map<string, AdjustableMonitor>();
 
-    public get(key: string): IMonitor | null {
+    public get(key: string): AdjustableMonitor | null {
         return this.map.get(key) ?? null;
     }
 
-    public set(key: string, data: IMonitor): boolean {
+    public set(key: string, data: AdjustableMonitor): boolean {
         this.map.set(key, data);
         return true;
     }

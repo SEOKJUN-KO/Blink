@@ -12,6 +12,7 @@ import { WarnFactory } from '@/app/factory/WarnFactory';
 import { MonitorContextRepo } from '@/app/db/InmemoryHash';
 import { BlinkPresenter, BlinkViewModel } from '../presenter/BlinkPresenter';
 import SoundWarningSettings from './SoundWarningSettings';
+import WarningThresholdControl from './WarningThresholdControl';
 
 export default function BlinkContainer() {
   
@@ -42,11 +43,13 @@ export default function BlinkContainer() {
       <div className="p-6 space-y-4">
         <VideoDisplay videoRef={videoRef} isRunning={vm?.isRunning ?? false} />
         {/* <BlinkInfo lastBlinkInterval={vm?.lastBlinkInterval ?? '0'} /> */}
+        <WarningThresholdControl
+          warningThreshold={vm?.warningThreshold ?? 5}
+          onUpdateThreshold={(threshold) => controller?.setThreshold(threshold)}
+        />
         <SoundWarningSettings 
           isWarningEnabled={vm?.soundOn ?? false}
-          warningThreshold={vm?.warningThreshold ?? 0}
           onToggleWarning={() => controller?.addWarnTool('Sound', { volumn: 50 })}
-          // onUpdateThreshold={updateWarningThreshold}
         />
         <StatusIndicator isRunning={vm?.isRunning ?? false} />
       </div>
