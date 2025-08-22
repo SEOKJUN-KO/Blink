@@ -13,6 +13,7 @@ import { MonitorContextRepo } from '@/app/db/InmemoryHash';
 import { BlinkPresenter, BlinkViewModel } from '../presenter/BlinkPresenter';
 import SoundWarningSettings from './SoundWarningSettings';
 import WarningThresholdControl from './WarningThresholdControl';
+import { CustomPiP } from './CustomPip';
 
 export default function BlinkContainer() {
   
@@ -53,6 +54,8 @@ export default function BlinkContainer() {
         />
         <StatusIndicator isRunning={vm?.isRunning ?? false} />
       </div>
+
+      <CustomPiP isRunning={vm?.isRunning ?? false} />
 
       {/* 하단 버튼 */}
       <div className="px-6 pb-6">
