@@ -3,18 +3,23 @@ import { IUseCase } from "@/app/interface/IUseCase"
 import { IWarn, IWarningToolManager, WarningToolType } from "@/app/interface/IWarning";
 import { IDefaultPresenter } from "@/app/interface/IPresenter";
 import { DBGateway } from "@/app/interface/DBGateway";
-import { IMonitor } from "@/app/interface/IMonitor";
+import { AdjustableMonitor } from "@/app/interface/IMonitor";
 import { BlinkMonitorContext } from "../entity/BlinkMonitorContext";
+import { IResolver } from "@/app/interface/Resolver";
+import { DI_TOKENS } from "@/app/di/DI_Token";
 
 export class SetWarnToolUC implements IUseCase<{ type: ServiceType}, boolean> {
-    constructor(
-        private db: DBGateway<ServiceType, IMonitor>,
-        private warnTools: IWarningToolManager,
-        private presenter: IDefaultPresenter<any>,
-    ) {}
+    private db: DBGateway<ServiceType, AdjustableMonitor>
+    private warnTools: IWarningToolManager
+    private presenter: IDefaultPresenter<any>
+    
+    constructor( private readonly resolve: IResolver) {
+        this.db = this.resolve.get<DBGateway<string, AdjustableMonitor>>(DI_TOKENS.Blink.DB);
+        this.presenter = this.resolve.get<IDefaultPresenter<any>>(DI_TOKENS.Blink.Presenter);
+        this.warnTools = this.resolve.get<IWarningToolManager>(DI_TOKENS.Blink.Warn);
+    }
 
     async execute(req: { type: ServiceType, toolType: WarningToolType, warn: IWarn }): Promise<boolean> {
-        console.log("execute")
         let data = this.db.get(req.type)?.snapshot()
         if( data == undefined ) { 
             const ctx = new BlinkMonitorContext('ENDED', new Date(), 5)

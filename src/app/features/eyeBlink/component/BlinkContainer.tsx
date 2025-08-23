@@ -4,40 +4,40 @@ import BlinkInfo from './BlinkInfo';
 import StatusIndicator from './StatusIndicator';
 import ControlButton from './ControlButton';
 import VideoDisplay from './VideoDisplay';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { BlinkViewController } from '../controller/BlinkViewController';
-import { BlinkSensor } from '../domain/BlinkSensor';
-import { WarningManager } from '@/app/domain/WarningManager';
-import { WarnFactory } from '@/app/factory/WarnFactory';
-import { MonitorContextRepo } from '@/app/db/InmemoryHash';
-import { BlinkPresenter, BlinkViewModel } from '../presenter/BlinkPresenter';
+import { BlinkViewModel } from '../presenter/BlinkPresenter';
 import SoundWarningSettings from './SoundWarningSettings';
 import WarningThresholdControl from './WarningThresholdControl';
 import { CustomPiP } from './CustomPip';
+import { buildBlinkDIContainer } from '@/app/di/BlinkDIContainer';
+import { DI_TOKENS } from '@/app/di/DI_Token';
 
 export default function BlinkContainer() {
   
   const [vm, setVM] = useState<BlinkViewModel | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [controller, setController] = useState<BlinkViewController | null>(null);
-  const presenter = useMemo(() => new BlinkPresenter(setVM), []);
 
 
   useEffect(() => {
     if (!videoRef.current) return;
-    const warnManager = new WarningManager()
-    const c = new BlinkViewController(
-      new BlinkSensor(videoRef.current),
-      new MonitorContextRepo(),
-      warnManager,
-      warnManager, 
-      new WarnFactory(),
-      presenter
-    );
-    setController(c);
-    return () => c.monitorStop();
-  }, []);
+    const di = buildBlinkDIContainer({
+      videoEl: videoRef.current,
+      setVM,
+    });
 
+    // 컨트롤러 얻기
+    const c = di.get<BlinkViewController>(DI_TOKENS.Blink.Controller);
+    // 뷰에서 컨트롤러 메서드 호출
+    
+    setController(c);
+    return () => {
+      c.monitorStop()
+      di.dispose();
+    };
+  }, []);
+  console.log(vm)
   return (
     <div className="w-full max-w-md bg-white rounded-3xl shadow-2xl overflow-hidden">
       {/* 콘텐츠 영역 */}

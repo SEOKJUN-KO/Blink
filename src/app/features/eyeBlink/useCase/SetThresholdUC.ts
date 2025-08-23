@@ -6,16 +6,24 @@ import { DBGateway } from "@/app/interface/DBGateway";
 import { AdjustableMonitor } from "@/app/interface/IMonitor";
 import { BlinkMonitorContext } from "../entity/BlinkMonitorContext";
 import { ISensor } from "@/app/interface/ISensor";
+import { IResolver } from "@/app/interface/Resolver";
+import { DI_TOKENS } from "@/app/di/DI_Token";
 
 export class SetThresholdUC implements IUseCase<{ type: ServiceType}, boolean> {
+    private sensor: ISensor
+    private db: DBGateway<string, AdjustableMonitor>
+    private warn: IWarningExecutor
+    private warnTools:IWarningToolManager
+    private presenter: IDefaultPresenter<any>
+    
     constructor(
-        private sensor: ISensor,
-        private db: DBGateway<string, AdjustableMonitor>,
-        private warn: IWarningExecutor,
-        private warnTools:IWarningToolManager,
-        private presenter: IDefaultPresenter<any>,
+        private readonly resolve: IResolver
     ) {
-        
+        this.sensor = this.resolve.get<ISensor>(DI_TOKENS.Blink.Sensor);
+        this.db = this.resolve.get<DBGateway<string, AdjustableMonitor>>(DI_TOKENS.Blink.DB);
+        this.presenter = this.resolve.get<IDefaultPresenter<any>>(DI_TOKENS.Blink.Presenter);
+        this.warn = this.resolve.get<IWarningExecutor>(DI_TOKENS.Blink.Warn);
+        this.warnTools = this.resolve.get<IWarningToolManager>(DI_TOKENS.Blink.WarnTools)
     }
 
     async execute(req: {type: ServiceType, threshold: number}): Promise<boolean> {
