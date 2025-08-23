@@ -37,7 +37,7 @@ export default function BlinkContainer() {
       di.dispose();
     };
   }, []);
-  console.log(vm)
+
   return (
     <div className="w-full max-w-md bg-white rounded-3xl shadow-2xl overflow-hidden">
       {/* 콘텐츠 영역 */}
