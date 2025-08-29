@@ -39,7 +39,7 @@ export class StartMonitorUC implements IUseCase<{ type: ServiceType }, boolean> 
         const data = this.db.get('blink')?.snapshot()
         if (data == undefined || data.threshold == undefined) { return ; }
         const threshold = data.threshold
-        this.warn.setWarning({threshold: threshold})
+        this.warn.setWarning({threshold: threshold}, this.presenter.present.bind(this.presenter))
         this.presenter.present({lastBlinkAt: new Date()})
     };
 }

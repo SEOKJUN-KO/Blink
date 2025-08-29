@@ -1,6 +1,6 @@
 export interface IWarn {
   canUse(): boolean
-  execute(snapshot: monitorSnapshot): {stop: () => void }
+  execute(snapshot: monitorSnapshot, present?: (data: any) => void): {stop: () => void }
 }
 
 export interface IWarningToolManager {
@@ -10,13 +10,13 @@ export interface IWarningToolManager {
 } 
 
 export interface IWarningExecutor {
-  setWarning(snapshot: monitorSnapshot): void
+  setWarning(snapshot: monitorSnapshot, present: (data: any) => void): void
   endWarning(): void
 }
 
 export type WarnOption = {
   volumn?: number;
-  flickeringSpeed?: number;
+  flickering?: number;
 }
 
 export type monitorSnapshot = {

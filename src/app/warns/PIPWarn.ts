@@ -1,6 +1,8 @@
 import { IWarn, monitorSnapshot, WarnOption } from "../interface/IWarning";
 
 export class PIPWarn implements IWarn {
+    private flick = false;
+    
     constructor(
         private option: WarnOption
     ){}
@@ -13,7 +15,28 @@ export class PIPWarn implements IWarn {
         return false
     }
 
-    execute(snapshot: monitorSnapshot): { stop: () => void; } {
-        return { stop: () => { /* 아무것도 안 함 */ } };
+    execute(snapshot: monitorSnapshot, present: (data: any) => void ): { stop: () => void } {
+        const delay = typeof snapshot.threshold === "number" && snapshot.threshold < 1000
+            ? snapshot.threshold * 1000
+            : snapshot.threshold;
+        let intervalId: NodeJS.Timeout | null = null;
+
+        const timeoutId = setTimeout(() => {
+            this.flick = !this.flick;
+            present({ pipFlick: this.flick });
+            intervalId = setInterval(() => {
+                if (typeof present === "function") {
+                    this.flick = !this.flick;
+                    present({ pipFlick: this.flick });
+                }
+            }, 800); 
+        }, delay);
+
+        return { stop: () => { 
+            clearTimeout(timeoutId);
+            if (intervalId) {
+                clearInterval(intervalId);
+            }
+        } };
     }
 }

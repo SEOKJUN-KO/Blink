@@ -6,6 +6,7 @@ export type BlinkViewModel = {
   warningThreshold: number;
   soundOn: boolean;
   pipOn: boolean;
+  pipFlick: boolean;
 }
 
 export type BlinkPresenterResponse = {
@@ -13,17 +14,25 @@ export type BlinkPresenterResponse = {
 }
 
 export class BlinkPresenter implements IDefaultPresenter <any>{
-    private prevVM: BlinkViewModel | null = null;
+  private prevVM: BlinkViewModel = {
+    isRunning: false,
+    lastBlinkAt: new Date(),
+    warningThreshold: 5,
+    soundOn: false,
+    pipOn: false,
+    pipFlick: false,
+  };
 
     constructor(private onPresent: (vm: BlinkViewModel) => void) {}
 
     present(response: any): void {
       const newVM: BlinkViewModel = {
-        isRunning: response.status == undefined ? (this.prevVM?.isRunning ?? false) : response.status === "ACTIVE" ? true : false ,
-        lastBlinkAt: response.lastBlinkAt !== undefined ? response.lastBlinkAt : (this.prevVM?.lastBlinkAt ?? new Date()),
-        warningThreshold: response.threshold !== undefined ? response.threshold : (this.prevVM?.warningThreshold ?? 5),
-        soundOn: response.warnTools ? response.warnTools.includes('Sound') : (this.prevVM?.soundOn ?? false),
-        pipOn: response.warnTools ? response.warnTools.includes('PIP') : (this.prevVM?.pipOn ?? false)
+        isRunning: response.status ? response.status === "ACTIVE" ? true : false : this.prevVM.isRunning,
+        lastBlinkAt: response.lastBlinkAt ?? this.prevVM.lastBlinkAt,
+        warningThreshold: response.threshold ?? this.prevVM.warningThreshold,
+        soundOn: response.warnTools ? response.warnTools.includes('Sound') : this.prevVM.soundOn,
+        pipOn: response.warnTools ? response.warnTools.includes('PIP') : this.prevVM.pipOn,
+        pipFlick: response.pipFlick ?? this.prevVM.pipFlick,
       };
       this.prevVM = newVM;
       this.onPresent(newVM); // 뷰 업데이트

@@ -19,13 +19,13 @@ export interface CustomPiPHandle {
 
 interface CustomPiPProps {
 	isRunning: boolean;
+	pipFlick: boolean;
 }
 
-function Widget({ count }: {
-	count: number;
-}) {
+function Widget({ count, pipFlick }: { count: number; pipFlick: boolean; }) {
+	const backgroundColor = pipFlick ? 'bg-black' : 'bg-white';
 	return (
-		<div className="w-[320px] h-[200px] rounded-2xl shadow-xl border border-gray-200 p-4 bg-white select-none">
+		<div className={`w-[320px] h-[200px] rounded-2xl shadow-xl border border-gray-200 p-4 select-none ${backgroundColor}`}>
 			<div className="flex items-center justify-between mb-2">
 				<div className="text-sm text-gray-500">Mini Control Panel</div>
 				<div className="relative group inline-block">
@@ -48,7 +48,7 @@ function Widget({ count }: {
 	);
 }
 
-export const CustomPiP = forwardRef<CustomPiPHandle, CustomPiPProps>(function CustomPiP({ isRunning }, ref)
+export const CustomPiP = forwardRef<CustomPiPHandle, CustomPiPProps>(function CustomPiP({ isRunning, pipFlick }, ref)
 {
 	const measureRef = useRef<HTMLDivElement>(null); // 오프스크린 측정용
 	const pipWinRef = useRef<PipWindow | null>(null);
@@ -160,12 +160,12 @@ export const CustomPiP = forwardRef<CustomPiPHandle, CustomPiPProps>(function Cu
 		<>
 			{/* 오프스크린 측정용 프리뷰 (페이지엔 보이지 않음) */}
 			<div ref={measureRef}>
-				<Widget count={count} />
+				<Widget count={count} pipFlick={pipFlick} />
 			</div>
 
 			{/* PiP 윈도우에 포털로 렌더 */}
 			{pipDoc && createPortal(
-				<Widget count={count} />,
+				<Widget count={count} pipFlick={pipFlick} />,
 				pipDoc.body
 			)}
 		</>

@@ -15,14 +15,14 @@ export class WarningManager implements IWarningExecutor, IWarningToolManager {
         return Array.from(this.tools.keys());
     }
     
-    setWarning(snapshot: monitorSnapshot): void {
+    setWarning(snapshot: monitorSnapshot, present: (data: any) => void): void {
         this.stopFuncs.forEach((f) => {
             f.stop()
         })
         this.stopFuncs = []
 
         this.tools.forEach((tool) => {
-            const stopF = tool.execute(snapshot)
+            const stopF = tool.execute(snapshot, present)
             this.stopFuncs.push(stopF)
         })
     }
