@@ -1,4 +1,4 @@
-import { IWarn, monitorSnapshot, WarnOption } from "../interface/IWarning";
+import { IWarn, monitorSnapshot, WarningToolType, WarnOption } from "../interface/IWarning";
 
 export class SoundWarn implements IWarn {
     private audioContext: AudioContext | null = null;
@@ -18,6 +18,17 @@ export class SoundWarn implements IWarn {
         }
     }
     
+    canUse(): boolean {
+        // 브라우저 호환성 체크
+        if (typeof window !== "undefined") {
+            const AudioCtx = (window.AudioContext || (window as any).webkitAudioContext);
+            if (AudioCtx) {
+                return true
+            }
+        }
+        return false
+    }
+
     execute(snapshot: monitorSnapshot): { stop: () => void } {
         console.log(snapshot)
         if (!this.audioContext) {

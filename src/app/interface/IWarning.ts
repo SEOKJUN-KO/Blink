@@ -1,4 +1,5 @@
 export interface IWarn {
+  canUse(): boolean
   execute(snapshot: monitorSnapshot): {stop: () => void }
 }
 
