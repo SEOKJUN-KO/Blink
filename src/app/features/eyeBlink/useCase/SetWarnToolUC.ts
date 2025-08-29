@@ -26,9 +26,11 @@ export class SetWarnToolUC implements IUseCase<{ type: ServiceType}, boolean> {
             this.db.set(req.type, ctx)
             data = ctx.snapshot()
         }
-        this.warnTools.addTool(req.toolType, req.warn);
-        data['warnTools'] = this.warnTools.getTools()
-        this.presenter.present(data)
+        if ( req.warn.canUse() ) {
+            this.warnTools.addTool(req.toolType, req.warn);
+            data['warnTools'] = this.warnTools.getTools()
+            this.presenter.present(data)    
+        }
         return true;
     }
 }

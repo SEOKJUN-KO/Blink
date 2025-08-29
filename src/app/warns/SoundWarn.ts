@@ -26,6 +26,7 @@ export class SoundWarn implements IWarn {
                 return true
             }
         }
+        alert('소리 기능을 활용할 수 없는 브라우저입니다.')
         return false
     }
 
