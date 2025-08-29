@@ -60,7 +60,7 @@ export default function BlinkContainer() {
         <StatusIndicator isRunning={vm?.isRunning ?? false} />
       </div>
 
-      <CustomPiP isRunning={vm?.isRunning ?? false} />
+      { vm?.pipOn && <CustomPiP isRunning={vm?.isRunning ?? false} /> }
 
       {/* 하단 버튼 */}
       <div className="px-6 pb-6">
