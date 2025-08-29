@@ -89,7 +89,9 @@ export const CustomPiP = forwardRef<CustomPiPHandle, CustomPiPProps>(function Cu
 	};
 
 	const openPiP = useCallback(async () => {
-		if (!isDocPiPSupported) throw new Error('Document Picture-in-Picture 미지원');
+		if (!isDocPiPSupported) {
+			return 
+		}
 		// @ts-ignore
 		const api = (window as any).documentPictureInPicture;
 

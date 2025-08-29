@@ -9,6 +9,7 @@ import { BlinkViewController } from '../controller/BlinkViewController';
 import { BlinkViewModel } from '../presenter/BlinkPresenter';
 import SoundWarningSettings from './SoundWarningSettings';
 import WarningThresholdControl from './WarningThresholdControl';
+import PIPWarningSettings from './PIPWarningSettings';
 import { CustomPiP } from './CustomPip';
 import { buildBlinkDIContainer } from '@/app/di/BlinkDIContainer';
 import { DI_TOKENS } from '@/app/di/DI_Token';
@@ -51,6 +52,10 @@ export default function BlinkContainer() {
         <SoundWarningSettings 
           isWarningEnabled={vm?.soundOn ?? false}
           onToggleWarning={() => vm?.soundOn ? controller?.deleteWarnTool('Sound') : controller?.addWarnTool('Sound', {volumn: 50})}
+        />
+        <PIPWarningSettings
+          isWarningEnabled={vm?.pipOn ?? false}
+          onToggleWarning={() => vm?.pipOn ? controller?.deleteWarnTool('PIP') : controller?.addWarnTool('PIP', {})}
         />
         <StatusIndicator isRunning={vm?.isRunning ?? false} />
       </div>

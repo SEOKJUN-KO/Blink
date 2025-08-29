@@ -5,6 +5,7 @@ export type BlinkViewModel = {
   lastBlinkAt: Date;
   warningThreshold: number;
   soundOn: boolean;
+  pipOn: boolean;
 }
 
 export type BlinkPresenterResponse = {
@@ -21,7 +22,8 @@ export class BlinkPresenter implements IDefaultPresenter <any>{
         isRunning: response.status == undefined ? (this.prevVM?.isRunning ?? false) : response.status === "ACTIVE" ? true : false ,
         lastBlinkAt: response.lastBlinkAt !== undefined ? response.lastBlinkAt : (this.prevVM?.lastBlinkAt ?? new Date()),
         warningThreshold: response.threshold !== undefined ? response.threshold : (this.prevVM?.warningThreshold ?? 5),
-        soundOn: response.warnTools ? response.warnTools.includes('Sound') : (this.prevVM?.soundOn ?? false)
+        soundOn: response.warnTools ? response.warnTools.includes('Sound') : (this.prevVM?.soundOn ?? false),
+        pipOn: response.warnTools ? response.warnTools.includes('PIP') : (this.prevVM?.pipOn ?? false)
       };
       this.prevVM = newVM;
       this.onPresent(newVM); // 뷰 업데이트
