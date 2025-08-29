@@ -31,12 +31,6 @@ export class SoundWarn implements IWarn {
     }
 
     execute(snapshot: monitorSnapshot): { stop: () => void } {
-        console.log(snapshot)
-        if (!this.audioContext) {
-            console.warn('이 브라우저에서는 Web Audio API를 지원하지 않습니다.');
-            return { stop: () => { /* 아무것도 안 함 */ } };
-        }
-        
         const delay = typeof snapshot.threshold === "number" && snapshot.threshold < 1000
             ? snapshot.threshold * 1000
             : snapshot.threshold;
