@@ -29,10 +29,14 @@ export class StartMonitorUC implements IUseCase<{ type: ServiceType }, boolean> 
         context.startMonitoring()
         const dbStatus = this.db.set(req.type, context)
         if (!dbStatus) { return false }
-        this.sensor.listen(req.type, this.eventCallback)
-        const data = context.snapshot()
-        this.presenter.present(data)
-        return true
+        if ( this.sensor.canUse() ) {
+            this.sensor.listen(req.type, this.eventCallback)
+            const data = context.snapshot()
+            this.presenter.present(data)
+            return true
+        }
+        alert('카메라 사용 불가능합니다. \n[노트북, 데스크탑의 크롬, 엣지 추천]')
+        return false
     }
 
     private eventCallback = (value: number): void => {

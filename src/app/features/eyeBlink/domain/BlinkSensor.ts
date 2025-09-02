@@ -13,6 +13,11 @@ export class BlinkSensor implements ISensor {
     private videoElement: HTMLVideoElement
   ) {}
 
+  public canUse(): boolean {
+    // 웹 워커와 카메라 사용 가능 여부 체크
+    return typeof Worker !== 'undefined' && !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
+  }
+
   public getCurrentValue(): number {
     // 워커에서 처리하므로 0 반환 (필요시 워커에서 요청)
     return 0;
