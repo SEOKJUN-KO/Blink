@@ -42,7 +42,7 @@ export default function BlinkInfo({ lastBlinkAt, isRunning }: BlinkInfoProps) {
               textAlign: 'left',
             }}
           >
-            {formattedElapsed}초
+            {isRunning ? formattedElapsed : '  --  '}초
           </p>
         </div>
       </div>
