@@ -28,13 +28,13 @@ export class SetThresholdUC implements IUseCase<{ type: ServiceType}, boolean> {
 
     async execute(req: {type: ServiceType, threshold: number}): Promise<boolean> {
         let context = this.db.get(req.type) ??  new BlinkMonitorContext('ENDED', new Date(), 5)
+        context.resetEvent()
         context.setThreshold(req.threshold)
         const dbStatus = this.db.set(req.type, context)
         if (!dbStatus) { return false }
         const data = context.snapshot()
-        if (data.satus === 'ACTIVE') {
+        if (data.status === 'ACTIVE') {
             this.sensor.listen(req.type, this.eventCallback)
-            context.recordEvent(new Date())
         }
         data['warnTools'] = this.warnTools.getTools()
         this.presenter.present(data)
@@ -42,10 +42,16 @@ export class SetThresholdUC implements IUseCase<{ type: ServiceType}, boolean> {
     }
 
     private eventCallback = (value: number): void => {
-        const data = this.db.get('blink')?.snapshot()
-        if (data == undefined || data.threshold == undefined) { return ; }
+        const ctx = this.db.get('blink')
+        if (ctx == undefined || ctx.snapshot().threshold == undefined) { return ; }
+        const data = ctx.snapshot()
+        ctx.recordEvent(new Date())
+        this.db.set('blink', ctx)
         const threshold = data.threshold
         this.warn.setWarning({threshold: threshold}, this.presenter.present.bind(this.presenter))
-        this.presenter.present({lastBlinkAt: new Date()})
+        this.presenter.present({lastBlinkAt: ctx.snapshot().lastBlinkAt})
     };
 }
+
+
+

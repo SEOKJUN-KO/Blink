@@ -27,7 +27,14 @@ export class SetWarnToolUC implements IUseCase<{ type: ServiceType}, boolean> {
             data = ctx.snapshot()
         }
         if ( req.warn.canUse() ) {
+            let context = this.db.get(req.type)
+            if (context == undefined) { return false }
+            if (data.status === 'ACTIVE') {
+                context.recordEvent(new Date())
+                this.db.set(req.type, context)
+            }
             this.warnTools.addTool(req.toolType, req.warn);
+            data['lastBlinkAt'] = new Date()
             data['warnTools'] = this.warnTools.getTools()
             this.presenter.present(data)    
         }
