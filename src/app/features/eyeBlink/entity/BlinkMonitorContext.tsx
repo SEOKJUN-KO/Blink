@@ -12,6 +12,10 @@ export class BlinkMonitorContext implements AdjustableMonitor {
         this.lastBlinkAt = new Date();
     }
 
+    public resetEvent(): void {
+        this.lastBlinkAt = new Date();
+    }
+
     public recordEvent(at: Date): void {
         if (this.status !== 'ACTIVE') throw new Error('not active');
         if (this.lastBlinkAt && at < this.lastBlinkAt) throw new Error('time back');
