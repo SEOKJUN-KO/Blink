@@ -20,35 +20,20 @@ export interface CustomPiPHandle {
 interface CustomPiPProps {
 	isRunning: boolean;
 	pipFlick: boolean;
+	threshold: number;
 }
 
-function Widget({ count, pipFlick }: { count: number; pipFlick: boolean; }) {
+function Widget({ time, pipFlick }: { time: number; pipFlick: boolean; }) {
 	const backgroundColor = pipFlick ? 'bg-black' : 'bg-white';
+	const textColor = pipFlick ? 'text-white' : 'text-black';
 	return (
-		<div className={`w-[320px] h-[200px] rounded-2xl shadow-xl border border-gray-200 p-4 select-none ${backgroundColor}`}>
-			<div className="flex items-center justify-between mb-2">
-				<div className="text-sm text-gray-500">Mini Control Panel</div>
-				<div className="relative group inline-block">
-					<button
-						aria-label="도움말"
-						className="w-6 h-6 rounded-full bg-gray-100 text-black text-xs grid place-items-center hover:bg-gray-200"
-					>
-						i
-					</button>
-					<div className="pointer-events-none absolute right-0 mt-2 w-56 rounded-md border border-gray-200 bg-white p-2 text-xs text-gray-600 shadow-lg opacity-0 group-hover:opacity-100 transition-opacity">
-						툴팁 예시: PiP 창 내에서도 hover/클릭 기반 툴팁이 정상 동작합니다.
-					</div>
-				</div>
-			</div>
-
-			<div className="flex items-center justify-between">
-				<div className="text-2xl font-semibold text-black tabular-nums">{count}</div>
-			</div>
+		<div className={`w-[320px] h-[200px] flex flex-col items-center pt-[40px] shadow-xl border border-gray-200 p-4 select-none ${backgroundColor}`}>
+			<pre className={`${textColor} text-center`}>{time}초동안 눈의 깜빡임이 없으면,<br/>색이 반전됩니다.</pre>
 		</div>
 	);
 }
 
-export const CustomPiP = forwardRef<CustomPiPHandle, CustomPiPProps>(function CustomPiP({ isRunning, pipFlick }, ref)
+export const CustomPiP = forwardRef<CustomPiPHandle, CustomPiPProps>(function CustomPiP({ isRunning, pipFlick, threshold }, ref)
 {
 	const measureRef = useRef<HTMLDivElement>(null); // 오프스크린 측정용
 	const pipWinRef = useRef<PipWindow | null>(null);
@@ -160,12 +145,12 @@ export const CustomPiP = forwardRef<CustomPiPHandle, CustomPiPProps>(function Cu
 		<>
 			{/* 오프스크린 측정용 프리뷰 (페이지엔 보이지 않음) */}
 			<div ref={measureRef}>
-				<Widget count={count} pipFlick={pipFlick} />
+				<Widget time={threshold} pipFlick={pipFlick} />
 			</div>
 
 			{/* PiP 윈도우에 포털로 렌더 */}
 			{pipDoc && createPortal(
-				<Widget count={count} pipFlick={pipFlick} />,
+				<Widget time={threshold} pipFlick={pipFlick} />,
 				pipDoc.body
 			)}
 		</>
