@@ -20,21 +20,13 @@ export class SetWarnToolUC implements IUseCase<{ type: ServiceType}, boolean> {
     }
 
     async execute(req: { type: ServiceType, toolType: WarningToolType, warn: IWarn }): Promise<boolean> {
-        let data = this.db.get(req.type)?.snapshot()
-        if( data == undefined ) { 
-            const ctx = new BlinkMonitorContext('ENDED', new Date(), 5)
-            this.db.set(req.type, ctx)
-            data = ctx.snapshot()
-        }
+        let context = this.db.get(req.type) ?? new BlinkMonitorContext('ENDED', new Date, 5)
+        context.resetEvent()
+        let data = context.snapshot()
+        if( data == undefined ) {  return false }
+
         if ( req.warn.canUse() ) {
-            let context = this.db.get(req.type)
-            if (context == undefined) { return false }
-            if (data.status === 'ACTIVE') {
-                context.recordEvent(new Date())
-                this.db.set(req.type, context)
-            }
             this.warnTools.addTool(req.toolType, req.warn);
-            data['lastBlinkAt'] = new Date()
             data['warnTools'] = this.warnTools.getTools()
             this.presenter.present(data)    
         }
