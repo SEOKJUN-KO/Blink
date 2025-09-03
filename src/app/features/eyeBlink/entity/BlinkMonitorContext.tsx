@@ -19,7 +19,7 @@ export class BlinkMonitorContext implements AdjustableMonitor {
     }
     
     public snapshot(): {} {
-        return {"status": this.status, "lastBlink": this.lastBlinkAt, "threshold": this.threshold};
+        return {"status": this.status, "lastBlinkAt": this.lastBlinkAt, "threshold": this.threshold};
     }
 
     public setThreshold(threshold: number): void {
