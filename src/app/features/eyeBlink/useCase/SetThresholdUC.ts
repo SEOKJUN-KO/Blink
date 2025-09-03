@@ -13,7 +13,6 @@ export class SetThresholdUC implements IUseCase<{ type: ServiceType}, boolean> {
     private sensor: ISensor
     private db: DBGateway<string, AdjustableMonitor>
     private warn: IWarningExecutor
-    private warnTools:IWarningToolManager
     private presenter: IDefaultPresenter<any>
     
     constructor(
@@ -23,7 +22,6 @@ export class SetThresholdUC implements IUseCase<{ type: ServiceType}, boolean> {
         this.db = this.resolve.get<DBGateway<string, AdjustableMonitor>>(DI_TOKENS.Blink.DB);
         this.presenter = this.resolve.get<IDefaultPresenter<any>>(DI_TOKENS.Blink.Presenter);
         this.warn = this.resolve.get<IWarningExecutor>(DI_TOKENS.Blink.Warn);
-        this.warnTools = this.resolve.get<IWarningToolManager>(DI_TOKENS.Blink.WarnTools)
     }
 
     async execute(req: {type: ServiceType, threshold: number}): Promise<boolean> {
@@ -32,11 +30,12 @@ export class SetThresholdUC implements IUseCase<{ type: ServiceType}, boolean> {
         context.setThreshold(req.threshold)
         const dbStatus = this.db.set(req.type, context)
         if (!dbStatus) { return false }
+        this.warn.setWarning({threshold: req.threshold}, this.presenter.present.bind(this.presenter))
+        
         const data = context.snapshot()
         if (data.status === 'ACTIVE') {
             this.sensor.listen(req.type, this.eventCallback)
         }
-        data['warnTools'] = this.warnTools.getTools()
         this.presenter.present(data)
         return true
     }
