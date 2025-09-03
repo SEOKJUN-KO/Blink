@@ -1,6 +1,6 @@
 import { ServiceType } from "@/app/type/ServiceType";
 import { IUseCase } from "@/app/interface/IUseCase"
-import { IWarningExecutor, IWarningToolManager } from "@/app/interface/IWarning";
+import { IWarningExecutor } from "@/app/interface/IWarning";
 import { IDefaultPresenter } from "@/app/interface/IPresenter";
 import { DBGateway } from "@/app/interface/DBGateway";
 import { AdjustableMonitor } from "@/app/interface/IMonitor";
