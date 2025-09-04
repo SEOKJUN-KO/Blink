@@ -20,7 +20,6 @@ export class PIPWarn implements IWarn {
             ? snapshot.threshold * 1000
             : snapshot.threshold;
         let intervalId: NodeJS.Timeout | null = null;
-
         const timeoutId = setTimeout(() => {
             this.flick = !this.flick;
             present({ pipFlick: this.flick });
@@ -34,6 +33,8 @@ export class PIPWarn implements IWarn {
 
         return { stop: () => { 
             clearTimeout(timeoutId);
+            this.flick = false;
+            present({ pipFlick: this.flick });
             if (intervalId) {
                 clearInterval(intervalId);
             }
