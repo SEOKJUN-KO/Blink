@@ -13,6 +13,7 @@ import PIPWarningSettings from './PIPWarningSettings';
 import { CustomPiP } from './CustomPip';
 import { buildBlinkDIContainer } from '@/app/di/BlinkDIContainer';
 import { DI_TOKENS } from '@/app/di/DI_Token';
+import { PlayButton } from '@/app/components/PlayButton';
 
 export default function BlinkContainer() {
   
