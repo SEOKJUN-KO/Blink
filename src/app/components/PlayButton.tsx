@@ -1,6 +1,6 @@
-import { Icon } from "./Icon";
+import { SVGIcon } from "./SVGIcon";
 
-export type ButtonProps = {
+type ButtonProps = {
     status: 'Default' | 'Hover' | 'Disabled';
     label: string;
 };
@@ -26,7 +26,7 @@ export const PlayButton: React.FC<ButtonProps> = ({ status, label }) => {
             disabled={status === 'Disabled'}
             className="flex items-center justify-center gap-2"
         >
-            <Icon name="Play" size={16} />
+            <SVGIcon name="Play" size={16} />
             <span>{label}</span>
         </button>
     );
