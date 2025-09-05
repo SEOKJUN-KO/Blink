@@ -1,5 +1,6 @@
 'use client';
 
+import VisualAlert from '@/app/components/VisualAlert';
 import React, {
 	useRef,
 	useCallback,
@@ -24,11 +25,9 @@ interface CustomPiPProps {
 }
 
 function Widget({ time, pipFlick }: { time: number; pipFlick: boolean; }) {
-	const backgroundColor = pipFlick ? 'bg-black' : 'bg-white';
-	const textColor = pipFlick ? 'text-white' : 'text-black';
 	return (
-		<div className={`w-[320px] h-[200px] flex flex-col items-center pt-[40px] shadow-xl border border-gray-200 p-4 select-none ${backgroundColor}`}>
-			<pre className={`${textColor} text-center`}>{time}초동안 눈의 깜빡임이 없으면,<br/>색이 반전됩니다.</pre>
+		<div className={`w-[240px] h-[136px] flex flex-col items-center justify-center shadow-xl border border-gray-200 p-4 select-none bg-white`}>
+			<VisualAlert isActive={pipFlick} />
 		</div>
 	);
 }
@@ -38,7 +37,6 @@ export const CustomPiP = forwardRef<CustomPiPHandle, CustomPiPProps>(function Cu
 	const measureRef = useRef<HTMLDivElement>(null); // 오프스크린 측정용
 	const pipWinRef = useRef<PipWindow | null>(null);
 	const [pipDoc, setPipDoc] = useState<Document | null>(null); // ★ 포털 타깃 문서
-	const [count, setCount] = useState(0);
 
 	const isDocPiPSupported =
 		typeof window !== 'undefined' && 'documentPictureInPicture' in window;
