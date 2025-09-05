@@ -116,13 +116,6 @@ export const CustomPiP = forwardRef<CustomPiPHandle, CustomPiPProps>(function Cu
 
 	useImperativeHandle(ref, () => ({ open: openPiP, close: closePiP }), [openPiP, closePiP]);
 
-	// 상태 동기화(예시)
-	useEffect(() => {
-		const ch = new BroadcastChannel('custom-pip');
-		ch.onmessage = (ev) => { if (ev.data?.type === 'INC') setCount((c) => c + 1); };
-		return () => ch.close();
-	}, []);
-
 	// isRunning 변화에 따른 자동 관리
 	useEffect(() => {
 		if (!('documentPictureInPicture' in window)) return;
