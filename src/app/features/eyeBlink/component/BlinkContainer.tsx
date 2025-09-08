@@ -75,6 +75,7 @@ export default function BlinkContainer() {
             if (controller) { controller.monitorStop();}
           }}
         />
+        <PlayButton status={'Default'} label={''} />
       </div>
     </div>
   );
