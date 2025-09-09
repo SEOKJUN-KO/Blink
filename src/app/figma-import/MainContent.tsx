@@ -1,3 +1,5 @@
+'use client'
+
 import React, { useEffect, useRef, useState } from 'react';
 import Title from './Title';
 import InfoBadge from './InfoBadge';
@@ -37,8 +39,7 @@ const MainContent = () => {
       <div className="flex flex-col items-center">
         <video
           ref={videoRef}
-          className="w-full h-40 object-cover rounded-2xl"
-          style={{ opacity: 0 }}
+          className="w-0 h-0 opacity-0"
         />
         <Title />
         <div className="mt-6">
