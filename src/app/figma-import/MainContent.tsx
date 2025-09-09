@@ -35,6 +35,11 @@ const MainContent = () => {
   return (
     <main className="flex flex-col items-center justify-center flex-grow">
       <div className="flex flex-col items-center">
+        <video
+          ref={videoRef}
+          className="w-full h-40 object-cover rounded-2xl"
+          style={{ opacity: 0 }}
+        />
         <Title />
         <div className="mt-6">
           <InfoBadge />
