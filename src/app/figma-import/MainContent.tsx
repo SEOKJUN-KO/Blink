@@ -43,7 +43,7 @@ const MainContent = () => {
         />
         <Title />
         <div className="mt-6">
-          <InfoBadge />
+          <InfoBadge treshold={vm?.warningThreshold} soundOn={vm?.soundOn ?? false} pipOn={vm?.pipOn ?? false}/>
         </div>
         <div className="mt-16 text-center">
           <PlayButton status={ vm?.isRunning ? 'Play' : 'Pause'} label={vm?.isRunning ? '측정 중지' : '측정 시작'} 
@@ -55,8 +55,8 @@ const MainContent = () => {
               if (controller) { controller.monitorStop(); }
             }}
           />
-          <p className="mt-4 font-pretendard text-Caption font-Medium text-TextBlack-500">
-            개인정보 수집 안내
+          <p className="mt-4 font-pretendard text-Caption font-Medium text-TextBlack-300">
+            개인정보를 수집하지 않으니 안심하세요.
           </p>
         </div>
       </div>
