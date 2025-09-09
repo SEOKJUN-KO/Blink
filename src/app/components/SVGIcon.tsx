@@ -1,9 +1,9 @@
 import Image from "next/image";
 
-type IconProps = { name: string; size: number };
+type IconProps = { name: string; width: number, height: number };
 
-export const SVGIcon: React.FC<IconProps> = ({ name, size }) => (
-  <div style={{ width: `${size}px`, height: `${size}px` }} className="flex items-center justify-center">
-    <Image src={`/${name}.svg`} alt={name} width={size} height={size} />
+export const SVGIcon: React.FC<IconProps> = ({ name, width, height }) => (
+  <div style={{ width: `${width}px`, height: `${height}px` }} className="flex items-center justify-center">
+    <Image src={`/${name}.svg`} alt={name} width={width} height={height} />
   </div>
 );

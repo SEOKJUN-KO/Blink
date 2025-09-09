@@ -33,7 +33,7 @@ export const PlayButton: React.FC<ButtonProps> = ({ status, label, onStart, onSt
                 else { onStart() }
             }}
         >
-            <SVGIcon name={status === 'Play' ? "Pause" : 'Play'} size={16} />
+            <SVGIcon name={status === 'Play' ? "Pause" : 'Play'} width={16} height={16} />
             <span>{label}</span>
         </button>
     );
