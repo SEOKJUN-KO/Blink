@@ -41,7 +41,7 @@ const MainContent = () => {
           ref={videoRef}
           className="w-0 h-0 opacity-0"
         />
-        <Title />
+        <Title status={ vm?.isRunning ? 'Play' : 'Pause'}/>
         <div className="mt-6">
           <InfoBadge treshold={vm?.warningThreshold} soundOn={vm?.soundOn ?? false} pipOn={vm?.pipOn ?? false}/>
         </div>
