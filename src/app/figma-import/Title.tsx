@@ -17,7 +17,7 @@ const Title: React.FC<Props> = ({ status }) => {
       }
       
       { status === "Pause" ?
-        <p className="mt-3 font-pretendard text-sub-title font-regular text-text-white-800">
+        <p className="mt-3 font-pretendard text-sub-title font-regular text-text-black-700">
           집중 속 잊기 쉬운 눈 깜빡임,<br />
           건강한 눈 습관을 되찾도록 도와드릴게요
         </p> :
