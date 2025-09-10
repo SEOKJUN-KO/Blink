@@ -8,8 +8,14 @@ import { BlinkViewController } from '../features/eyeBlink/controller/BlinkViewCo
 import { BlinkViewModel } from '../features/eyeBlink/presenter/BlinkPresenter';
 import { buildBlinkDIContainer } from '../di/BlinkDIContainer';
 import { DI_TOKENS } from '../di/DI_Token';
+import SettingScreen from './setting-screen/SettingScreen';
 
-const MainContent = () => {
+interface Props {
+  isSettingVisible: boolean;
+  onClose: () => void;
+}
+
+const MainContent: React.FC<Props> = ({ isSettingVisible, onClose }) => {
 
   const [vm, setVM] = useState<BlinkViewModel | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -36,6 +42,11 @@ const MainContent = () => {
   
   return (
     <main className="flex flex-col items-center justify-center flex-grow">
+      {isSettingVisible && vm && controller &&
+        <div className="absolute top-0 left-0 w-full h-full bg-black-opacity flex items-center justify-center">
+          <SettingScreen onClose={onClose} vm={vm} controller={controller} />
+        </div>
+      }
       <div className="flex flex-col items-center">
         <video
           ref={videoRef}

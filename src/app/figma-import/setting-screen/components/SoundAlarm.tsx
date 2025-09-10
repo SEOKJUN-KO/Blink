@@ -1,13 +1,15 @@
 
 import React from 'react';
 import Toggle from './Toggle';
+import { BlinkViewModel } from '@/app/features/eyeBlink/presenter/BlinkPresenter';
+import { BlinkViewController } from '@/app/features/eyeBlink/controller/BlinkViewController';
 
 interface SoundAlarmProps {
-  isOn: boolean;
-  onToggle: () => void;
+  vm: BlinkViewModel;
+  controller: BlinkViewController;
 }
 
-const SoundAlarm: React.FC<SoundAlarmProps> = ({ isOn, onToggle }) => {
+const SoundAlarm: React.FC<SoundAlarmProps> = ({ vm, controller }) => {
   return (
     <div className="flex items-center justify-between py-4">
       <div>
@@ -16,7 +18,7 @@ const SoundAlarm: React.FC<SoundAlarmProps> = ({ isOn, onToggle }) => {
           설정된 간격 안에 눈을 깜빡이지 않을 경우, 소리로 알림을 재생합니다.
         </p>
       </div>
-      <Toggle isOn={isOn} onToggle={onToggle} />
+      <Toggle isOn={vm.soundOn} doToggleOn={() => controller.addWarnTool('Sound', {volumn: 50})} doToggleOff={() => controller.deleteWarnTool('Sound')} />
     </div>
   );
 };

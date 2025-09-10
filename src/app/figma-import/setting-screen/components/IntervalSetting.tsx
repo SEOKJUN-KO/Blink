@@ -1,13 +1,15 @@
 
 import React from 'react';
 import Counter from './Counter';
+import { BlinkViewModel } from '@/app/features/eyeBlink/presenter/BlinkPresenter';
+import { BlinkViewController } from '@/app/features/eyeBlink/controller/BlinkViewController';
 
 interface IntervalSettingProps {
-  interval: number;
-  onIntervalChange: (newInterval: number) => void;
+  vm: BlinkViewModel;
+  controller: BlinkViewController;
 }
 
-const IntervalSetting: React.FC<IntervalSettingProps> = ({ interval, onIntervalChange }) => {
+const IntervalSetting: React.FC<IntervalSettingProps> = ({ vm, controller }) => {
   return (
     <div className="p-6">
       <h2 className="text-caption font-medium text-text-black-500 mb-4">간격 설정</h2>
@@ -19,7 +21,7 @@ const IntervalSetting: React.FC<IntervalSettingProps> = ({ interval, onIntervalC
             건강한 눈 깜빡임은 3~4초, 작업 중 알림 방해를 최소화하려면 7~8초를 고려해 보세요.
           </p>
         </div>
-        <Counter value={interval} onValueChange={onIntervalChange} />
+        <Counter vm={vm} controller={controller} />
       </div>
     </div>
   );

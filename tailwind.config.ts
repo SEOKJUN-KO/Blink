@@ -10,7 +10,7 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        'BrandGreen': '#51aa55',
+        'brand-green': '#51aa55',
         'gray-scale-50': 'rgba(243, 243, 246, 1)',
         'gray-scale-100': 'rgba(233, 233, 239, 1)',
         'gray-scale-200': 'rgba(202, 202, 211, 1)',

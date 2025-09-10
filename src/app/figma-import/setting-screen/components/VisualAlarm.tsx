@@ -1,13 +1,15 @@
 
 import React from 'react';
 import Toggle from './Toggle';
+import { BlinkViewModel } from '@/app/features/eyeBlink/presenter/BlinkPresenter';
+import { BlinkViewController } from '@/app/features/eyeBlink/controller/BlinkViewController';
 
 interface VisualAlarmProps {
-  isOn: boolean;
-  onToggle: () => void;
+  vm: BlinkViewModel;
+  controller: BlinkViewController;
 }
 
-const VisualAlarm: React.FC<VisualAlarmProps> = ({ isOn, onToggle }) => {
+const VisualAlarm: React.FC<VisualAlarmProps> = ({ vm, controller }) => {
   return (
     <div className="flex items-center justify-between py-4">
       <div>
@@ -16,7 +18,7 @@ const VisualAlarm: React.FC<VisualAlarmProps> = ({ isOn, onToggle }) => {
           설정된 간격 안에 눈을 깜빡이지 않을 경우, PIP 창에서 시각적인 알림을 표시합니다.
         </p>
       </div>
-      <Toggle isOn={isOn} onToggle={onToggle} />
+      <Toggle isOn={vm.pipOn} doToggleOn={() => controller?.addWarnTool('PIP', {}) } doToggleOff={() => controller.deleteWarnTool('PIP')}/>
     </div>
   );
 };
