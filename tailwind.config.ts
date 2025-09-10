@@ -31,6 +31,7 @@ const config: Config = {
         'text-white-1000': 'rgba(255, 255, 255, 1)',
         'black': 'rgba(0, 0, 0, 1)',
         'white': 'rgba(255, 255, 255, 1)',
+        'black-opacity': 'rgba(0, 0, 0, 0.5)',
       },
       fontFamily: {
         pretendard: ['Pretendard'],
