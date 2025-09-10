@@ -11,7 +11,7 @@ interface SoundAlarmProps {
 
 const SoundAlarm: React.FC<SoundAlarmProps> = ({ vm, controller }) => {
   return (
-    <div className="flex items-center justify-between py-4">
+    <div className="flex items-center justify-between mt-5">
       <div>
         <h3 className="text-body font-medium text-text-black-900">소리 알림</h3>
         <p className="text-caption font-medium text-text-black-300 mt-1">

@@ -11,8 +11,8 @@ interface IntervalSettingProps {
 
 const IntervalSetting: React.FC<IntervalSettingProps> = ({ vm, controller }) => {
   return (
-    <div className="p-6">
-      <h2 className="text-caption font-medium text-text-black-500 mb-4">간격 설정</h2>
+    <div className="px-[56px] py-[28px]">
+      <h2 className="text-caption font-medium text-text-black-500 mb-5">간격 설정</h2>
       <div className="flex items-start justify-between">
         <div>
           <h3 className="text-body font-medium text-text-black-900">눈 깜빡임 간격</h3>

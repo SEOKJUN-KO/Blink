@@ -1,4 +1,3 @@
-
 import React from 'react';
 import Toggle from './Toggle';
 import { BlinkViewModel } from '@/app/features/eyeBlink/presenter/BlinkPresenter';

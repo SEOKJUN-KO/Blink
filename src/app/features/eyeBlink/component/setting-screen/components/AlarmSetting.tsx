@@ -14,8 +14,8 @@ const AlarmSetting: React.FC<AlarmSettingProps> = ({
   controller,
 }) => {
   return (
-    <div className="p-6">
-      <h2 className="text-caption font-medium text-text-black-500 mb-2">알림 방식</h2>
+    <div className="py-7 px-14">
+      <h2 className="text-caption font-medium text-text-black-500 mb-5">알림 방식</h2>
       <VisualAlarm vm={vm} controller={controller} />
       <SoundAlarm vm={vm} controller={controller} />
     </div>

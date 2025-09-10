@@ -19,7 +19,7 @@ const Counter: React.FC<CounterProps> = ({ vm, controller }) => {
   };
 
   return (
-    <div className="flex items-center gap-4">
+    <div className="flex items-center gap-10">
       <button onClick={decrement} disabled={vm.warningThreshold <= 3}>
         <SVGIcon
           name={ vm.warningThreshold <= 3 ? 'MinusBtnDisabled' : 'MinusBtn' }

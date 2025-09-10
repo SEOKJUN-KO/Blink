@@ -15,12 +15,11 @@ interface SettingScreenProps {
 
 const SettingScreen: React.FC<SettingScreenProps> = ({ onClose, vm, controller }) => {
   return (
-    <div className="w-[776px] h-[458px] bg-white rounded-md border border-gray-scale-100">
+    <div className="w-[776px] h-[458px] bg-white rounded-md border border-gray-scale-100 justify-center items-center">
       <SettingHeader onClose={onClose} />
       <IntervalSetting vm={vm} controller={controller} />
-      <div className="h-[1px] bg-gray-scale-50 mx-6"></div>
-      <AlarmSetting vm={vm} controller={controller}
-      />
+      <div className="h-[1px] bg-gray-scale-50 mx-[56px]"></div>
+      <AlarmSetting vm={vm} controller={controller}/>
     </div>
   );
 };
