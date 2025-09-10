@@ -55,7 +55,7 @@ const MainContent = () => {
               if (controller) { controller.monitorStop(); }
             }}
           />
-          <p className="mt-4 font-pretendard text-Caption font-Medium text-TextBlack-300">
+          <p className="mt-4 font-pretendard text-caption font-medium text-text-black-300">
             개인정보를 수집하지 않으니 안심하세요.
           </p>
         </div>

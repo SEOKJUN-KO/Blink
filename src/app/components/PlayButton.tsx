@@ -10,14 +10,14 @@ type ButtonProps = {
 };
 
 export const PlayButton: React.FC<ButtonProps> = ({ status, label, onStart, onStop }) => {
-    const baseClasses = "w-[200px] h-[48px] rounded-Round font-pretendard text-Body font-Medium flex items-center justify-center gap-2";
+    const baseClasses = "w-[200px] h-[48px] rounded-round font-pretendard text-body font-Medium flex items-center justify-center gap-2";
 
     const statusClasses = {
-        Default: "bg-Primary-500 text-White",
-        Hover: "hover:bg-Primary-700 text-White",
-        Disabled: "bg-Primary-100 text-TextBlack-300",
-        Play: "bg-Primary-500 text-White",
-        Pause: "bg-Primary-500 text-White",
+        Default: "bg-primary-scale-500 text-white",
+        Hover: "hover:bg-primary-scale-700 text-white",
+        Disabled: "bg-primary-scale-100 text-text-black-300",
+        Play: "bg-primary-scale-500 text-white",
+        Pause: "bg-primary-scale-500 text-white",
     };
 
     const [enter, setEnter] = useState(false)
