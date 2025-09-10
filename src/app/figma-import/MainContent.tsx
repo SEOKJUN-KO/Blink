@@ -9,6 +9,7 @@ import { BlinkViewModel } from '../features/eyeBlink/presenter/BlinkPresenter';
 import { buildBlinkDIContainer } from '../di/BlinkDIContainer';
 import { DI_TOKENS } from '../di/DI_Token';
 import SettingScreen from './setting-screen/SettingScreen';
+import { CustomPiP } from '../features/eyeBlink/component/CustomPip';
 
 interface Props {
   isSettingVisible: boolean;
@@ -71,6 +72,8 @@ const MainContent: React.FC<Props> = ({ isSettingVisible, onClose }) => {
           </p>
         </div>
       </div>
+
+      { vm?.pipOn && <CustomPiP isRunning={vm?.isRunning ?? false} pipFlick={vm?.pipFlick ?? false} threshold={vm?.warningThreshold ?? 5} /> }
     </main>
   );
 };
