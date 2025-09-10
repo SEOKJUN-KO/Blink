@@ -1,5 +1,5 @@
 import React from 'react';
-import { SVGIcon } from '../components/SVGIcon';
+import { SVGIcon } from '../../../components/SVGIcon';
 
 interface HeaderProps {
   onSettingClick: () => void;

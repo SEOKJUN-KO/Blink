@@ -1,7 +1,5 @@
 import { Metadata } from 'next';
-import Layout from './components/Layout';
-import BlinkContainer from './features/eyeBlink/component/BlinkContainer';
-import StaticContent from './features/eyeBlink/component/StaticContent';
+import BlinkPage from './features/eyeBlink/component/page';
 
 export const metadata: Metadata = {
   title: 'Blink - 눈 건강 지킴이',
@@ -11,12 +9,6 @@ export const metadata: Metadata = {
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex flex-col items-center justify-center p-4">
-      {/* 헤더 영역 */}
-      <StaticContent />
-
-      {/* 메인 콘텐츠 */}
-      <BlinkContainer />
-    </div>
+    <BlinkPage />
   );
 }

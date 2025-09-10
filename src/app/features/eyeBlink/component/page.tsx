@@ -1,8 +1,8 @@
 'use client'; 
 
 import React, { useState } from 'react';
-import Header from './Header';
 import MainContent from './MainContent';
+import Header from './Header';
 
 const BlinkPage = () => {
   const [isSettingVisible, setIsSettingVisible] = useState(false);

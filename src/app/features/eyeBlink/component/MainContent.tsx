@@ -3,13 +3,13 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Title from './Title';
 import InfoBadge from './InfoBadge';
-import { PlayButton } from '../components/PlayButton';
-import { BlinkViewController } from '../features/eyeBlink/controller/BlinkViewController';
-import { BlinkViewModel } from '../features/eyeBlink/presenter/BlinkPresenter';
-import { buildBlinkDIContainer } from '../di/BlinkDIContainer';
-import { DI_TOKENS } from '../di/DI_Token';
+import { PlayButton } from '../../../components/PlayButton';
+import { BlinkViewController } from '../controller/BlinkViewController';
+import { BlinkViewModel } from '../presenter/BlinkPresenter';
+import { buildBlinkDIContainer } from '../../../di/BlinkDIContainer';
+import { DI_TOKENS } from '../../../di/DI_Token';
 import SettingScreen from './setting-screen/SettingScreen';
-import { CustomPiP } from '../features/eyeBlink/component/CustomPip';
+import { CustomPiP } from './CustomPip';
 
 interface Props {
   isSettingVisible: boolean;
