@@ -26,7 +26,7 @@ interface CustomPiPProps {
 
 function Widget({ time, pipFlick }: { time: number; pipFlick: boolean; }) {
 	return (
-		<div className={`w-[240px] h-[136px] flex flex-col items-center justify-center shadow-xl border border-gray-200 p-4 select-none bg-white`}>
+		<div className={`w-[240px] h-[136px] flex flex-col items-center justify-center p-4 select-none bg-white`}>
 			<VisualAlert isActive={pipFlick} />
 		</div>
 	);
