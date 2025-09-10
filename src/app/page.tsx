@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import BlinkPage from './features/eyeBlink/component/page';
+import BlinkComponent from './features/eyeBlink/component/BlinkComponent';
 
 export const metadata: Metadata = {
   title: 'Blink - 눈 건강 지킴이',
@@ -9,6 +9,6 @@ export const metadata: Metadata = {
 
 export default function Home() {
   return (
-    <BlinkPage />
+    <BlinkComponent />
   );
 }

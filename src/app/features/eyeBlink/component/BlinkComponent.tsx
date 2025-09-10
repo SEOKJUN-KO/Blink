@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import MainContent from './MainContent';
 import Header from './Header';
 
-const BlinkPage = () => {
+const BlinkComponent = () => {
   const [isSettingVisible, setIsSettingVisible] = useState(false);
 
   return (
@@ -15,4 +15,4 @@ const BlinkPage = () => {
   );
 };
 
-export default BlinkPage;
+export default BlinkComponent;

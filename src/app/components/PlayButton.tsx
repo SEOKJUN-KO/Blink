@@ -25,7 +25,7 @@ export const PlayButton: React.FC<ButtonProps> = ({ status, label, onStart, onSt
     return (
         <button 
             disabled={status === 'Disabled'}
-            className={`${baseClasses} ${enter ? statusClasses.Hover  : statusClasses[status]}`}
+            className={`${baseClasses} ${enter ? statusClasses.Hover  : statusClasses[status]} mt-16 text-center`}
             onMouseEnter={()=>setEnter(true)}
             onMouseLeave={()=>setEnter(false)}
             onClick={() => {
