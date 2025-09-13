@@ -14,9 +14,10 @@ import { CustomPiP } from './CustomPip';
 interface Props {
   isSettingVisible: boolean;
   onClose: () => void;
+  setSettingVisible: () => void;
 }
 
-const MainContent: React.FC<Props> = ({ isSettingVisible, onClose }) => {
+const MainContent: React.FC<Props> = ({ isSettingVisible, onClose, setSettingVisible }) => {
 
   const [vm, setVM] = useState<BlinkViewModel | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -38,6 +39,15 @@ const MainContent: React.FC<Props> = ({ isSettingVisible, onClose }) => {
       di.dispose();
     };
   }, []);
+
+  function onStart() {
+    const cookies = document.cookie.split('; ');
+    const hasClickedSetting = cookies.find(row => row.startsWith('hasClickedSetting='));
+    if (!hasClickedSetting) {
+      setSettingVisible()
+    }
+    if (controller) { controller.monitorStart(); }  else { alert('error'); } 
+  }
   
   return (
     <main className="flex flex-col items-center justify-center flex-grow">
@@ -47,7 +57,7 @@ const MainContent: React.FC<Props> = ({ isSettingVisible, onClose }) => {
         <InfoBadge treshold={vm?.warningThreshold} soundOn={vm?.soundOn ?? false} pipOn={vm?.pipOn ?? false}/>
 
         <PlayButton status={ vm?.isRunning ? 'Play' : 'Pause'} label={vm?.isRunning ? '측정 중지' : '측정 시작'} 
-          onStart={() => { if (controller) { controller.monitorStart(); }  else { alert('error'); } }}
+          onStart={ () => { onStart() } }
           onStop={() => { if (controller) { controller.monitorStop(); } }}
         />
         
